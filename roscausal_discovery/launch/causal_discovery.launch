@@ -1,0 +1,32 @@
+<launch>
+  <arg name="data_dir" default = "/root/shared/"/>
+  <arg name="res_dir" default = "/root/shared/"/>
+  <arg name="postprocess_data_dir" default = "/root/shared/"/>
+  <arg name="postprocess_script_dir" default = "$(find roscausal_data)/postprocess_scripts/"/>
+  <arg name="postprocess_script" default = "postprocess.py"/>
+  <arg name="cd_method" default="fpcmci"/>
+  <arg name="sig_alpha" default="0.05"/>
+  <arg name="filter_alpha" default="0.05"/>
+  <arg name="min_lag" default="1"/>
+  <arg name="max_lag" default="1"/>
+  <arg name="id_format" default="%Y%m%d_%H%M%S"/>
+  <arg name="csv_prefix" default="data_"/>
+  <arg name="vars" default="h_v, h_{\theta}, h_{\theta_{g}}, h_{d_g}, h_{risk}, h_{\omega}, h_{d_{obs}}"/>
+
+  <node name="roscausal_discovery" pkg="roscausal_discovery" type="causal_discovery.py" output="screen">
+    <param name="data_dir"   value="$(arg data_dir)"/> 
+    <param name="res_dir"   value="$(arg res_dir)"/> 
+    <param name="cd_method"   value="$(arg cd_method)"/> 
+    <param name="sig_alpha"   value="$(arg sig_alpha)"/>
+    <param name="filter_alpha"   value="$(arg filter_alpha)"/>
+    <param name="min_lag"   value="$(arg min_lag)"/>
+    <param name="max_lag"   value="$(arg max_lag)"/>
+    <param name="id_format"   value="$(arg id_format)"/>
+    <param name="csv_prefix"   value="$(arg csv_prefix)"/>
+    <param name="postprocess_data_dir"   value="$(arg postprocess_data_dir)"/>
+    <param name="postprocess_script_dir" value="$(arg postprocess_script_dir)"/>
+    <param name="postprocess_script" value="$(arg postprocess_script)"/>
+    <param name="vars" value="$(arg vars)"/>
+  </node>
+  
+</launch>

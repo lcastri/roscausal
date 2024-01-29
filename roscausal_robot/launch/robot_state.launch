@@ -1,0 +1,8 @@
+<launch>
+  <node name="roscausal_robot" pkg="roscausal_robot" type="robot_state.py" output="screen">
+    <param name="odom_topic" type="string" value="/mobile_base_controller/odom"/>
+    <param name="pose_topic" type="string" value="/robot_pose"/>
+    <param name="source_frame" type="string" value="base_footprint"/>
+    <param name="target_frame" type="string" value="map"/>
+  </node>
+</launch>
