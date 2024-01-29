@@ -7,6 +7,24 @@ from shapely.geometry import *
 import math
 
 
+def wrap(angle, lower_bound, upper_bound):
+    """
+    Wrap an angle to be within the specified bounds.
+
+    Args:
+        angle (float): The angle to be wrapped.
+        lower_bound (float): The lower bound for the angle.
+        upper_bound (float): The upper bound for the angle.
+
+    Returns:
+        float: The wrapped angle.
+    """
+    range_width = upper_bound - lower_bound
+    wrapped_angle = (angle - lower_bound) % range_width + lower_bound
+
+    return wrapped_angle
+
+
 class Agent():
     def __init__(self, name, x, y, theta, v, omega) -> None:
         self.name = name
@@ -53,18 +71,21 @@ class Agent():
         """
         return self.p(t).distance(obs.p(t))
     
-    def bearing(self, t, obs):
+    
+    def heading(self, t, obj):
         """
-        Bearing angle
-
+        heading angle
+        
         Args:
             t (int): time index
-            obs (Agent): obstacle
-
+            obj (Agent): object
+            
         Returns:
-            float: bearing angle
+            float: heading angle
         """
-        return math.atan2(obs.p(t).y - self.p(t).y, obs.p(t).x - self.p(t).x)
+        
+        angle = wrap(2*np.pi - wrap(math.atan2(obj.p(t).y - self.p(t).y, obj.p(t).x - self.p(t).x) - wrap(self.theta[t], 0, 2*np.pi), 0, 2*np.pi), -np.pi, np.pi)
+        return angle
     
     
     def risk(self, t, obs):
@@ -168,14 +189,15 @@ if __name__ == '__main__':
     parser.add_argument("--obs_size", help="Obstacle increase size (radius) for risk calculation")
     parser.add_argument("--safe_dist", help="Safety distance for risk calculation")
     args = parser.parse_args()
+
     CSV = args.csv
     DATA_DIR = args.data_dir
     PP_DATA_DIR = args.pp_data_dir
     OBS_SIZE = args.obs_size
     SAFE_DIST = args.safe_dist
     
-    INPUT_CSV = DATA_DIR + '/' + CSV + '.csv'
-    OUTPUT_CSV = PP_DATA_DIR + '/' + CSV + '.csv'
+    INPUT_CSV = DATA_DIR + '/' + CSV
+    OUTPUT_CSV = PP_DATA_DIR + '/' + CSV
 
     # Read the CSV into a pandas DataFrame
     data = pd.read_csv(INPUT_CSV)
@@ -192,14 +214,14 @@ if __name__ == '__main__':
                 
         df.loc[i] = {"r_v" : R.v[i], 
                      r"r_{\theta}" : R.theta[i], 
-                     r"r_{\theta_{g}}" : R.bearing(i, RG), 
+                     r"r_{\theta_{g}}" : R.heading(i, RG), 
                      "r_{d_g}" : R.dist(i, RG), 
                      "r_{risk}" : R.risk(i-1, H), 
                      r"r_{\omega}" : R.omega[i],
                      r"r_{d_{obs}}" : R.dist(i, H), 
                      "h_v" : H.v[i],
                      r"h_{\theta}" : H.theta[i], 
-                     r"h_{\theta_{g}}" : H.bearing(i, HG), 
+                     r"h_{\theta_{g}}" : H.heading(i, HG), 
                      "h_{d_g}" : H.dist(i, HG), 
                      "h_{risk}" : H.risk(i-1, R), 
                      r"h_{\omega}" : H.omega[i],

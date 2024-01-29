@@ -137,8 +137,8 @@ if __name__ == '__main__':
     PP_DATA_DIR = str(rospy.get_param("~pp_data_dir"))
     PP_SCRIPT_DIR = str(rospy.get_param("~pp_script_dir"))
     PP_SCRIPT = str(rospy.get_param("~pp_script"))
-    OBS_SIZE = float(rospy.get_param("~obs_size"))
-    SAFE_DIST = float(rospy.get_param("~safe_dist"))
+    OBS_SIZE = str(rospy.get_param("~obs_size"))
+    SAFE_DIST = str(rospy.get_param("~safe_dist"))
     
     # Create data pool directory
     os.makedirs(DATA_DIR, exist_ok=True)

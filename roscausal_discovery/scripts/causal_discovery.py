@@ -136,8 +136,8 @@ if __name__ == '__main__':
     ALPHA = float(rospy.get_param("~sig_alpha", default = 0.05))
     MINLAG = int(rospy.get_param("~min_lag", default = 1))
     MAXLAG = int(rospy.get_param("~max_lag", default = 1))
-    DATA_DIR = str(rospy.get_param("~data_dir", default = '/root/shared/')) + 'data_pool'
-    RES_DIR = str(rospy.get_param("~res_dir", default = '/root/shared/')) + 'cm_pool'
+    DATA_DIR = str(rospy.get_param("~data_dir", default = '/root/shared/'))
+    RES_DIR = str(rospy.get_param("~res_dir", default = '/root/shared/'))
     ID_FORMAT = str(rospy.get_param("~id_format", default = '%Y%m%d_%H%M%S'))
     CSV_PREFIX = str(rospy.get_param("~css_prefix", default = 'data_'))
     VARS = ["r" + v for v in str(rospy.get_param("~vars")).split(",")]
