@@ -111,7 +111,7 @@ class HumanStateClass():
         self.robot = None
         
         # Risk publisher     
-        self.pub_human_state = rospy.Publisher('/roscausal/human_state', HumanState, queue_size=10)
+        self.pub_human_state = rospy.Publisher('/roscausal/human', HumanState, queue_size=10)
         
         # TrackedPersons subscriber
         rospy.Subscriber("/ped/control/teleop_persons", TrackedPersons, self.get_data)
