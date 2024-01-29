@@ -136,7 +136,7 @@ class HumanStateClass():
         msg = HumanState()
         msg.header = Header()
         msg.header.stamp = rospy.Time.now()
-        msg.frame_id = TARGET_FRAME
+        msg.header.frame_id = TARGET_FRAME
         msg.pose2D = Pose2D(self.x, self.y, self.theta)
         
         twist = Twist()

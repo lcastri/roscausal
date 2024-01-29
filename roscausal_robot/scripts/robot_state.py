@@ -117,8 +117,8 @@ class RobotStateClass():
         msg = RobotState()
         msg.header = Header()
         msg.header.stamp = rospy.Time.now()
+        msg.header.frame_id = TARGET_FRAME
                 
-        msg.frame_id = TARGET_FRAME
         msg.pose2D = get_2DPose(robot_pose)
         msg.twist = twist
         self.pub_robot_state.publish(msg)
