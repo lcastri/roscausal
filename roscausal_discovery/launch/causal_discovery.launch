@@ -1,9 +1,6 @@
 <launch>
-  <arg name="data_dir" default = "/root/shared/"/>
-  <arg name="res_dir" default = "/root/shared/"/>
-  <arg name="postprocess_data_dir" default = "/root/shared/"/>
-  <arg name="postprocess_script_dir" default = "$(find roscausal_data)/postprocess_scripts/"/>
-  <arg name="postprocess_script" default = "postprocess.py"/>
+  <arg name="data_dir" default = "$(find roscausal_data)/pp_pool/"/>
+  <arg name="res_dir" default = "$(find roscausal_discovery)/cm_pool/"/>
   <arg name="cd_method" default="fpcmci"/>
   <arg name="sig_alpha" default="0.05"/>
   <arg name="filter_alpha" default="0.05"/>
@@ -23,9 +20,6 @@
     <param name="max_lag"   value="$(arg max_lag)"/>
     <param name="id_format"   value="$(arg id_format)"/>
     <param name="csv_prefix"   value="$(arg csv_prefix)"/>
-    <param name="postprocess_data_dir"   value="$(arg postprocess_data_dir)"/>
-    <param name="postprocess_script_dir" value="$(arg postprocess_script_dir)"/>
-    <param name="postprocess_script" value="$(arg postprocess_script)"/>
     <param name="vars" value="$(arg vars)"/>
   </node>
   

@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import math
-import numpy as np
 import rospy
 from roscausal_msgs.msg import HumanState
 from pedsim_msgs.msg import TrackedPersons
@@ -14,29 +12,25 @@ from shapely.geometry import *
 NODE_NAME = "roscausal_human"
 NODE_RATE = 10 # [Hz]
 
-PEOPLE_TOPIC = rospy.get_param("~people_topic", "/ped/control/teleop_persons")
-GOAL_SRV = rospy.get_param("~goal_srv", "/hri/human_goal")
-SOURCE_FRAME = rospy.get_param("~source_frame", "map")
-TARGET_FRAME = rospy.get_param("~target_frame", "map")
 # DIST_THRES = float(rospy.get_param("/hri/safe_distance", default = 5.0))
 # INC_SIZE = float(rospy.get_param("/hri/obs_size", default = 2.5))
 
-def wrap(angle, lower_bound, upper_bound):
-    """
-    Wrap an angle to be within the specified bounds.
+# def wrap(angle, lower_bound, upper_bound):
+#     """
+#     Wrap an angle to be within the specified bounds.
 
-    Args:
-        angle (float): The angle to be wrapped.
-        lower_bound (float): The lower bound for the angle.
-        upper_bound (float): The upper bound for the angle.
+#     Args:
+#         angle (float): The angle to be wrapped.
+#         lower_bound (float): The lower bound for the angle.
+#         upper_bound (float): The upper bound for the angle.
 
-    Returns:
-        float: The wrapped angle.
-    """
-    range_width = upper_bound - lower_bound
-    wrapped_angle = (angle - lower_bound) % range_width + lower_bound
+#     Returns:
+#         float: The wrapped angle.
+#     """
+#     range_width = upper_bound - lower_bound
+#     wrapped_angle = (angle - lower_bound) % range_width + lower_bound
 
-    return wrapped_angle
+#     return wrapped_angle
 
 
 def get_2DPose(p: PoseWithCovariance):
@@ -203,6 +197,11 @@ if __name__ == '__main__':
     # Node
     rospy.init_node(NODE_NAME, anonymous=True)
     rate = rospy.Rate(NODE_RATE)
+    
+    PEOPLE_TOPIC = rospy.get_param("~people_topic", "/ped/control/teleop_persons")
+    GOAL_SRV = rospy.get_param("~goal_srv", "/hri/human_goal")
+    SOURCE_FRAME = rospy.get_param("~source_frame")
+    TARGET_FRAME = rospy.get_param("~target_frame", "map")
     
     r = HumanStateClass()
 

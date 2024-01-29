@@ -4,7 +4,6 @@ from datetime import datetime
 from enum import Enum
 import glob
 import os
-import subprocess
 from tigramite.independence_tests.gpdc import GPDC
 from fpcmci.CPrinter import CPLevel
 from fpcmci.FPCMCI import FPCMCI
@@ -27,19 +26,6 @@ class CausalDiscoveryMethod(Enum):
 
 NODE_NAME = "roscausal_discovery"
 NODE_RATE = 10 # [Hz]
-CDM = str(rospy.get_param("~cd_method", default = "fpcmci"))
-FALPHA = float(rospy.get_param("~filter_alpha", default = 0.05))
-ALPHA = float(rospy.get_param("~sig_alpha", default = 0.05))
-MINLAG = int(rospy.get_param("~min_lag", default = 1))
-MAXLAG = int(rospy.get_param("~max_lag", default = 1))
-DATA_DIR = str(rospy.get_param("~data_dir", default = '/root/shared/')) + 'data_pool'
-RES_DIR = str(rospy.get_param("~res_dir", default = '/root/shared/')) + 'cm_pool'
-POSTPROCESS_DATA_DIR = str(rospy.get_param("~postprocess_data_dir", default = '/root/shared/')) + 'postprocess_pool'
-ID_FORMAT = str(rospy.get_param("~id_format", default = '%Y%m%d_%H%M%S'))
-CSV_PREFIX = str(rospy.get_param("~cas_prefix", default = 'data_'))
-POSTPROCESS_SCRIPT_DIR = str(rospy.get_param("~postprocess_script_dir", ""))
-POSTPROCESS_SCRIPT = str(rospy.get_param("~postprocess_script", ""))
-VARS = ["r" + v for v in str(rospy.get_param("~vars")).split(",")]
 
 
 class CausalDiscovery():
@@ -77,27 +63,27 @@ class CausalDiscovery():
                      val_condtest = GPDC(significance = 'analytic', gp_params = None),
                      verbosity = CPLevel.NONE,
                      neglect_only_autodep = True,
-                     resfolder = RES_DIR + '/' + self.dfname)
+                     resfolder = RES_DIR + '/' + self.dfname if RES_DIR != "" else None)
         
         if CDM == CausalDiscoveryMethod.FPCMCI.value:
             feature, causalmodel = cdm.run()
         elif CDM == CausalDiscoveryMethod.PCMCI.value:
             feature, causalmodel = cdm.run_pcmci()
         
-        if len(feature) > 0:   
+        if RES_DIR != "" and len(feature) > 0:   
             cdm.dag(label_type = LabelType.NoLabels)
             cdm.timeseries_dag()
+            self.df.to_csv(RES_DIR + '/' + self.dfname + '.csv')
         
         return feature, causalmodel
         
 
-def extract_timestamp_from_filename(file_path, file_prefix=CSV_PREFIX, file_extension='.csv'):
+def extract_timestamp_from_filename(file_path, file_extension='.csv'):
     """
     Extract timestamp from the file_path
 
     Args:
         file_path (str): file path
-        file_prefix (str, optional): csv file prefix. Defaults to CSV_PREFIX.
         file_extension (str, optional): file extenstion. Defaults to '.csv'.
 
     Returns:
@@ -105,7 +91,7 @@ def extract_timestamp_from_filename(file_path, file_prefix=CSV_PREFIX, file_exte
     """
     # Extract the timestamp from the file name
     file = os.path.basename(file_path)
-    start_index = len(file_prefix)
+    start_index = len(CSV_PREFIX)
     end_index = file.find(file_extension)
     timestamp_str = file[start_index:end_index]
 
@@ -113,7 +99,7 @@ def extract_timestamp_from_filename(file_path, file_prefix=CSV_PREFIX, file_exte
     return datetime.strptime(timestamp_str, ID_FORMAT)
 
 
-def get_file(file_prefix=CSV_PREFIX, file_extension='.csv'):
+def get_file(file_extension='.csv'):
     """
     Get file to process
 
@@ -126,7 +112,7 @@ def get_file(file_prefix=CSV_PREFIX, file_extension='.csv'):
         str: file name
     """
     # Construct the file pattern based on the prefix and extension
-    file_pattern = os.path.join(DATA_DIR, f'{file_prefix}*{file_extension}')
+    file_pattern = os.path.join(DATA_DIR, f'{CSV_PREFIX}*{file_extension}')
 
     # List files in the directory matching the pattern
     files = glob.glob(file_pattern)
@@ -141,33 +127,34 @@ def get_file(file_prefix=CSV_PREFIX, file_extension='.csv'):
                 
                 
 if __name__ == '__main__':
-    # Create res pool directory
-    os.makedirs(RES_DIR, exist_ok=True)
-    if POSTPROCESS_SCRIPT != "": os.makedirs(POSTPROCESS_DATA_DIR, exist_ok=True)
-    
     # Node
     rospy.init_node(NODE_NAME, anonymous=True)
     rate = rospy.Rate(NODE_RATE)
+    
+    CDM = str(rospy.get_param("~cd_method", default = "fpcmci"))
+    FALPHA = float(rospy.get_param("~filter_alpha", default = 0.05))
+    ALPHA = float(rospy.get_param("~sig_alpha", default = 0.05))
+    MINLAG = int(rospy.get_param("~min_lag", default = 1))
+    MAXLAG = int(rospy.get_param("~max_lag", default = 1))
+    DATA_DIR = str(rospy.get_param("~data_dir", default = '/root/shared/')) + 'data_pool'
+    RES_DIR = str(rospy.get_param("~res_dir", default = '/root/shared/')) + 'cm_pool'
+    ID_FORMAT = str(rospy.get_param("~id_format", default = '%Y%m%d_%H%M%S'))
+    CSV_PREFIX = str(rospy.get_param("~css_prefix", default = 'data_'))
+    VARS = ["r" + v for v in str(rospy.get_param("~vars")).split(",")]
+    
+    # Create res pool directory
+    if RES_DIR != "": os.makedirs(RES_DIR, exist_ok=True)   
 
     # Publisher
-    pub_causal_model = rospy.Publisher('/hri/causal_model', CausalModel, queue_size=10)
+    pub_causal_model = rospy.Publisher('/roscausal/causal_model', CausalModel, queue_size=10)
     
     rospy.logwarn("Waiting for a csv file...")
     while not rospy.is_shutdown():
         
         csv, name = get_file()
         if csv is not None:
-            if POSTPROCESS_SCRIPT != "":
-                rospy.logwarn("Postprocessing file: " + name)
-                subprocess.check_call(["python", POSTPROCESS_SCRIPT_DIR + POSTPROCESS_SCRIPT, "--csv", name])
-                pp_csv = '/'.join([POSTPROCESS_DATA_DIR, os.path.basename(csv)])
-            
-            if POSTPROCESS_SCRIPT != "":
-                rospy.logwarn("Causal analysis on: " + pp_csv)
-                d = pd.read_csv(pp_csv)
-            else:
-                rospy.logwarn("Causal analysis on: " + csv)
-                d = pd.read_csv(csv)
+            rospy.logwarn("Causal analysis on: " + csv)
+            d = pd.read_csv(csv)
                 
             dc = CausalDiscovery(d, name)
             f, cm = dc.run()
@@ -180,9 +167,10 @@ if __name__ == '__main__':
                 cs = cm.get_skeleton()
                 val = cm.get_val_matrix()
                 pval = cm.get_pval_matrix()
-                rospy.logwarn("CAUSAL STRUCTURE: " + str(cs))
-                rospy.logwarn("VAL MATRIX: " + str(val))
-                rospy.logwarn("PVAL MATRIX: " + str(pval))
+                rospy.logwarn("Features: " + str(f))
+                rospy.logwarn("Causal Structure: " + str(cs))
+                rospy.logwarn("Val Matrix: " + str(val))
+                rospy.logwarn("Pval Matrix: " + str(pval))
                 msg.features = f
                 msg.causal_structure.data = cs.flatten().tolist()
                 msg.val_matrix.data = val.flatten().tolist()
@@ -193,9 +181,5 @@ if __name__ == '__main__':
             rospy.logwarn("Removing file: " + csv)
             os.chmod(csv, stat.S_IWUSR | stat.S_IRUSR | stat.S_IXUSR)
             os.remove(csv)
-            if POSTPROCESS_SCRIPT != "":
-                rospy.logwarn("Removing file: " + pp_csv)
-                os.chmod(pp_csv, stat.S_IWUSR | stat.S_IRUSR | stat.S_IXUSR)
-                os.remove(pp_csv)
                 
         rate.sleep()

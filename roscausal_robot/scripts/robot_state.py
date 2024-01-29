@@ -16,11 +16,6 @@ from move_base_msgs.msg import MoveBaseActionGoal
 NODE_NAME = "roscausal_robot"
 NODE_RATE = 10 # [Hz]
 
-ODOM_TOPIC = rospy.get_param("~odom_topic", "/mobile_base_controller/odom")
-POSE_TOPIC = rospy.get_param("~pose_topic", "/robot_pose")
-GOAL_TOPIC = rospy.get_param("~goal_topic", "/move_base/goal")
-SOURCE_FRAME = rospy.get_param("~source_frame", "base_footprint")
-TARGET_FRAME = rospy.get_param("~target_frame", "map")
 
 def get_2DPose(p: PoseWithCovarianceStamped):
     """
@@ -79,7 +74,7 @@ class RobotStateClass():
         self.ats.registerCallback(self.get_data)
         
         
-    def cb_robot_goal(self, goal: MoveBaseActionGoal):
+    def cb_goal(self, goal: MoveBaseActionGoal):
         """
         Goal callback
 
@@ -151,6 +146,12 @@ if __name__ == '__main__':
     # Node
     rospy.init_node(NODE_NAME, anonymous=True)
     rate = rospy.Rate(NODE_RATE)
+    
+    ODOM_TOPIC = rospy.get_param("~odom_topic", "/mobile_base_controller/odom")
+    POSE_TOPIC = rospy.get_param("~pose_topic", "/robot_pose")
+    GOAL_TOPIC = rospy.get_param("~goal_topic", "/move_base/goal")
+    SOURCE_FRAME = rospy.get_param("~source_frame")
+    TARGET_FRAME = rospy.get_param("~target_frame", "map")
     
     r = RobotStateClass()
 

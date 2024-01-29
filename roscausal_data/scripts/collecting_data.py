@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from datetime import datetime
+import subprocess
 import rospy
 import pandas as pd
 import os
@@ -11,13 +12,6 @@ from roscausal_msgs.msg import RobotState
 
 NODE_NAME = "roscausal_data"
 NODE_RATE = 10 # [Hz]
-TS_LENGTH = float(rospy.get_param("~ts_length", default = 150)) # [s]
-DATA_DIR = str(rospy.get_param("~data_dir")) + '/data_pool'
-DT = float(rospy.get_param("~dt", default = 0.1))
-SUBSAMPLING = bool(rospy.get_param("~subsampling", default = False))
-ID_FORMAT = str(rospy.get_param("~id_format", default = '%Y%m%d_%H%M%S'))
-CSV_PREFIX = str(rospy.get_param("~csv_prefix", default = 'data_'))
-
 
 class DataCollector():
 
@@ -56,7 +50,7 @@ class DataCollector():
         if self.time_init is None or (time_now - self.time_init >= TS_LENGTH):
             
             # Save currect dataframe
-            if self.df is not None:
+            if self.raw is not None:
                 # this is to make sure that the dataframe contains data with time in ascending order.
                 # with ApproximateTimeSynchronizer might not be always true
                 self.raw.sort_values(by = 'time', ascending = True, inplace = True, ignore_index = True)
@@ -64,10 +58,17 @@ class DataCollector():
                 # subsample your dataset
                 if SUBSAMPLING: self.raw = self.subsampling(self.raw, DT)
                 timestamp_str = datetime.now().strftime(ID_FORMAT)
-
-                rospy.logwarn("CSV file saved: " + CSV_PREFIX + timestamp_str + '.csv')
-                self.raw.to_csv(DATA_DIR + '/' + CSV_PREFIX + timestamp_str + '.csv', index=False)
-
+                csv_name = CSV_PREFIX + timestamp_str + '.csv'
+                rospy.logwarn("CSV file saved: " + csv_name)
+                self.raw.to_csv(DATA_DIR + '/' + csv_name, index=False)
+                
+                if PP_SCRIPT != "":
+                    rospy.logwarn("Postprocessing file: " + csv_name)
+                    subprocess.check_call(["python", PP_SCRIPT_DIR + PP_SCRIPT, "--csv", csv_name,
+                                                                                "--data_dir", DATA_DIR,
+                                                                                "--pp_data_dir", PP_DATA_DIR,
+                                                                                "--obs_size", OBS_SIZE,
+                                                                                "--safe_dist", SAFE_DIST])
             
             # Init dataframe
             columns = ['time', 'r_{gx}', 'r_{gy}', 'r_x', 'r_y', 'r_{\theta}', 'r_v', 'r_{\omega}', 'h_{gx}', 'h_{gy}', 'h_x', 'h_y', 'h_{\theta}', 'h_v', 'h_{\omega}']
@@ -123,12 +124,25 @@ class DataCollector():
 
 if __name__ == '__main__':
 
-    # Create data pool directory
-    os.makedirs(DATA_DIR, exist_ok=True)
-    
     # Node
     rospy.init_node(NODE_NAME, anonymous=True)
     rate = rospy.Rate(NODE_RATE)
+    
+    TS_LENGTH = float(rospy.get_param("~ts_length", default = 150)) # [s]
+    DATA_DIR = str(rospy.get_param("~data_dir"))
+    DT = float(rospy.get_param("~dt", default = 0.1))
+    SUBSAMPLING = bool(rospy.get_param("~subsampling", default = False))
+    ID_FORMAT = str(rospy.get_param("~id_format", default = '%Y%m%d_%H%M%S'))
+    CSV_PREFIX = str(rospy.get_param("~csv_prefix", default = 'data_'))
+    PP_DATA_DIR = str(rospy.get_param("~pp_data_dir"))
+    PP_SCRIPT_DIR = str(rospy.get_param("~pp_script_dir"))
+    PP_SCRIPT = str(rospy.get_param("~pp_script"))
+    OBS_SIZE = float(rospy.get_param("~obs_size"))
+    SAFE_DIST = float(rospy.get_param("~safe_dist"))
+    
+    # Create data pool directory
+    os.makedirs(DATA_DIR, exist_ok=True)
+    if PP_SCRIPT != "": os.makedirs(PP_DATA_DIR, exist_ok=True)
     
     dc = DataCollector()
 
