@@ -97,7 +97,7 @@ class Agent():
             people (TrackedPersons): tracked people
         """
         
-        risk = self.v(t)
+        risk = self.v[t]
         collision = False
         
         # Calculate relative velocity vector
@@ -193,8 +193,8 @@ if __name__ == '__main__':
     CSV = args.csv
     DATA_DIR = args.data_dir
     PP_DATA_DIR = args.pp_data_dir
-    OBS_SIZE = args.obs_size
-    SAFE_DIST = args.safe_dist
+    OBS_SIZE = float(args.obs_size)
+    SAFE_DIST = float(args.safe_dist)
     
     INPUT_CSV = DATA_DIR + '/' + CSV
     OUTPUT_CSV = PP_DATA_DIR + '/' + CSV
@@ -207,19 +207,13 @@ if __name__ == '__main__':
     RG = Agent("RG", data["r_{gx}"], data["r_{gy}"], np.zeros_like(data["r_{gy}"]), np.zeros_like(data["r_{gy}"]), np.zeros_like(data["r_{gy}"]))
     HG = Agent("HG", data["h_{gx}"], data["h_{gy}"], np.zeros_like(data["r_{gy}"]), np.zeros_like(data["r_{gy}"]), np.zeros_like(data["r_{gy}"]))
             
-    df = pd.DataFrame(columns=["r_v", r"r_{\theta}", r"r_{\theta_{g}}", "r_{d_g}", "r_{risk}", r"r_{\omega}", r"r_{d_{obs}}", 
-                               "h_v", r"h_{\theta}", r"h_{\theta_{g}}", "h_{d_g}", "h_{risk}", r"h_{\omega}", r"h_{d_{obs}}"])
-                        
+    # df = pd.DataFrame(columns=["r_v", r"r_{\theta}", r"r_{\theta_{g}}", "r_{d_g}", "r_{risk}", r"r_{\omega}", r"r_{d_{obs}}", 
+    #                            "h_v", r"h_{\theta}", r"h_{\theta_{g}}", "h_{d_g}", "h_{risk}", r"h_{\omega}", r"h_{d_{obs}}"])  
+    df = pd.DataFrame(columns=["h_v", r"h_{\theta}", r"h_{\theta_{g}}", "h_{d_g}", "h_{risk}", r"h_{\omega}", r"h_{d_{obs}}"])  
+    
     for i in range(1, len(data)):
                 
-        df.loc[i] = {"r_v" : R.v[i], 
-                     r"r_{\theta}" : R.theta[i], 
-                     r"r_{\theta_{g}}" : R.heading(i, RG), 
-                     "r_{d_g}" : R.dist(i, RG), 
-                     "r_{risk}" : R.risk(i-1, H), 
-                     r"r_{\omega}" : R.omega[i],
-                     r"r_{d_{obs}}" : R.dist(i, H), 
-                     "h_v" : H.v[i],
+        df.loc[i] = {"h_v" : H.v[i],
                      r"h_{\theta}" : H.theta[i], 
                      r"h_{\theta_{g}}" : H.heading(i, HG), 
                      "h_{d_g}" : H.dist(i, HG), 
@@ -227,6 +221,21 @@ if __name__ == '__main__':
                      r"h_{\omega}" : H.omega[i],
                      r"h_{d_{obs}}" : H.dist(i, R),
                      }
+        # df.loc[i] = {"r_v" : R.v[i], 
+        #              r"r_{\theta}" : R.theta[i], 
+        #              r"r_{\theta_{g}}" : R.heading(i, RG), 
+        #              "r_{d_g}" : R.dist(i, RG), 
+        #              "r_{risk}" : R.risk(i-1, H), 
+        #              r"r_{\omega}" : R.omega[i],
+        #              r"r_{d_{obs}}" : R.dist(i, H), 
+        #              "h_v" : H.v[i],
+        #              r"h_{\theta}" : H.theta[i], 
+        #              r"h_{\theta_{g}}" : H.heading(i, HG), 
+        #              "h_{d_g}" : H.dist(i, HG), 
+        #              "h_{risk}" : H.risk(i-1, R), 
+        #              r"h_{\omega}" : H.omega[i],
+        #              r"h_{d_{obs}}" : H.dist(i, R),
+        #              }
 
     # Save the processed data to another CSV file
     df = df[1:]

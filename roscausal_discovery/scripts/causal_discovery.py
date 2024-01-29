@@ -52,7 +52,6 @@ class CausalDiscovery():
             DAG: causal model
         """
         df = Data(self.df)
-        df.shrink(VARS)
         
         cdm = FPCMCI(df, 
                      f_alpha = FALPHA,
@@ -140,7 +139,6 @@ if __name__ == '__main__':
     RES_DIR = str(rospy.get_param("~res_dir", default = '/root/shared/'))
     ID_FORMAT = str(rospy.get_param("~id_format", default = '%Y%m%d_%H%M%S'))
     CSV_PREFIX = str(rospy.get_param("~css_prefix", default = 'data_'))
-    VARS = ["r" + v for v in str(rospy.get_param("~vars")).split(",")]
     
     # Create res pool directory
     if RES_DIR != "": os.makedirs(RES_DIR, exist_ok=True)   

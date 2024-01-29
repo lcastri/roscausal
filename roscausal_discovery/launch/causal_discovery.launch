@@ -8,7 +8,6 @@
   <arg name="max_lag" default="1"/>
   <arg name="id_format" default="%Y%m%d_%H%M%S"/>
   <arg name="csv_prefix" default="data_"/>
-  <arg name="vars" default="h_v, h_{\theta}, h_{\theta_{g}}, h_{d_g}, h_{risk}, h_{\omega}, h_{d_{obs}}"/>
 
   <node name="roscausal_discovery" pkg="roscausal_discovery" type="causal_discovery.py" output="screen">
     <param name="data_dir"   value="$(arg data_dir)"/> 
