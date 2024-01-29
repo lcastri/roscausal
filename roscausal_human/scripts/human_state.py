@@ -146,7 +146,7 @@ class HumanStateClass():
         msg.twist = twist
         
         if pg is not None:
-            msg.goal = Point(self.pg[0], self.pg[1], 0)
+            msg.goal = Point(pg[0], pg[1], 0)
         else:
             msg.goal = Point(msg.pose2D.x, msg.pose2D.y, 0)
         
