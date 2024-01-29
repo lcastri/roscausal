@@ -19,7 +19,6 @@
     <param name="max_lag"   value="$(arg max_lag)"/>
     <param name="id_format"   value="$(arg id_format)"/>
     <param name="csv_prefix"   value="$(arg csv_prefix)"/>
-    <param name="vars" value="$(arg vars)"/>
   </node>
   
 </launch>
