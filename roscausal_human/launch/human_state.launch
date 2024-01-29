@@ -4,6 +4,7 @@
 
   <node name="roscausal_human" pkg="roscausal_human" type="human_state.py" output="screen">
     <param name="people_topic" type="string" value="/ped/control/teleop_persons"/>
+    <param name="goal_srv" type="string" value="/hri/human_goal"/>
     <param name="source_frame" type="string" value="map"/>
     <param name="target_frame" type="string" value="map"/>
   </node>

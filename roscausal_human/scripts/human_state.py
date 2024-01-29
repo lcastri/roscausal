@@ -15,6 +15,7 @@ NODE_NAME = "roscausal_human"
 NODE_RATE = 10 # [Hz]
 
 PEOPLE_TOPIC = rospy.get_param("~people_topic", "/ped/control/teleop_persons")
+GOAL_SRV = rospy.get_param("~goal_srv", "/hri/human_goal")
 SOURCE_FRAME = rospy.get_param("~source_frame", "map")
 TARGET_FRAME = rospy.get_param("~target_frame", "map")
 # DIST_THRES = float(rospy.get_param("/hri/safe_distance", default = 5.0))
@@ -115,8 +116,8 @@ class HumanStateClass():
         
         # TrackedPersons subscriber
         rospy.Subscriber("/ped/control/teleop_persons", TrackedPersons, self.get_data)
-                                                              
-
+        
+        
     def get_data(self, people: TrackedPersons):
         """
         Synchronized callback
@@ -124,6 +125,8 @@ class HumanStateClass():
         Args:
             people (TrackedPersons): people
         """
+        pg = rospy.get_param(GOAL_SRV, None)
+        
         person = people.tracks[0]
         state = get_2DPose(person.pose)
         self.x = state.x
@@ -147,6 +150,11 @@ class HumanStateClass():
         twist.angular.y = self.w.y
         twist.angular.z = self.w.z        
         msg.twist = twist
+        
+        if pg is not None:
+            msg.goal = Point(self.pg[0], self.pg[1], 0)
+        else:
+            msg.goal = Point(msg.pose2D.x, msg.pose2D.y, 0)
         
         self.pub_human_state.publish(msg)
         

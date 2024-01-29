@@ -9,7 +9,8 @@ import tf
 from tf2_ros import Buffer, TransformListener
 from tf2_geometry_msgs import do_transform_vector3
 from std_msgs.msg import Header
-from geometry_msgs.msg import Vector3Stamped, Pose2D, Twist
+from geometry_msgs.msg import Vector3Stamped, Pose2D, Twist, Point
+from move_base_msgs.msg import MoveBaseActionGoal
 
 
 NODE_NAME = "roscausal_robot"
@@ -17,6 +18,7 @@ NODE_RATE = 10 # [Hz]
 
 ODOM_TOPIC = rospy.get_param("~odom_topic", "/mobile_base_controller/odom")
 POSE_TOPIC = rospy.get_param("~pose_topic", "/robot_pose")
+GOAL_TOPIC = rospy.get_param("~goal_topic", "/move_base/goal")
 SOURCE_FRAME = rospy.get_param("~source_frame", "base_footprint")
 TARGET_FRAME = rospy.get_param("~target_frame", "map")
 
@@ -50,6 +52,8 @@ class RobotStateClass():
         """
         RobotState constructor
         """
+        self.rg = None
+        
         # Risk publisher     
         self.pub_robot_state = rospy.Publisher('/roscausal/robot', RobotState, queue_size=10)
         
@@ -58,6 +62,9 @@ class RobotStateClass():
                         
         # Robot pose subscriber
         sub_robot_pose = message_filters.Subscriber(POSE_TOPIC, PoseWithCovarianceStamped)
+        
+        # Robot Goal subscriber
+        rospy.Subscriber(GOAL_TOPIC, MoveBaseActionGoal, self.cb_goal)
                 
         # Init synchronizer and assigning a callback 
         self.ats = message_filters.ApproximateTimeSynchronizer([sub_odom,  
@@ -70,6 +77,16 @@ class RobotStateClass():
             self.tf_listener = TransformListener(self.tf_buffer)
 
         self.ats.registerCallback(self.get_data)
+        
+        
+    def cb_robot_goal(self, goal: MoveBaseActionGoal):
+        """
+        Goal callback
+
+        Args:
+            goal (MoveBaseActionGoal): robot goal
+        """
+        self.rg = (goal.goal.target_pose.pose.position.x, goal.goal.target_pose.pose.position.y)
                        
 
     def get_data(self, odom: Odometry,
@@ -121,6 +138,10 @@ class RobotStateClass():
                 
         msg.pose2D = get_2DPose(robot_pose)
         msg.twist = twist
+        if self.rg is not None:
+            msg.goal = Point(self.rg[0], self.rg[1], 0)
+        else:
+            msg.goal = Point(msg.pose2D.x, msg.pose2D.y, 0)
         self.pub_robot_state.publish(msg)
                 
         
