@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from datetime import datetime
+import math
 import subprocess
 import rospy
 import pandas as pd
@@ -79,7 +80,7 @@ class DataCollector():
         r_x = robot.pose2D.x
         r_y = robot.pose2D.y
         r_theta = robot.pose2D.theta
-        r_v = robot.twist.linear.x
+        r_v = math.sqrt(robot.twist.linear.x**2 + robot.twist.linear.y**2)
         r_w = robot.twist.angular.z
         r_g = robot.goal
         
@@ -87,7 +88,7 @@ class DataCollector():
         h_x = human.pose2D.x
         h_y = human.pose2D.y
         h_theta = human.pose2D.theta
-        h_v = human.twist.linear.x
+        h_v = math.sqrt(human.twist.linear.x**2 + human.twist.linear.y**2)
         h_w = human.twist.angular.z
         h_g = human.goal
 

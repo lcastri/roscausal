@@ -203,7 +203,7 @@ if __name__ == '__main__':
     data = pd.read_csv(INPUT_CSV)
     
     R = Agent("R", data["r_x"], data["r_y"], data["r_{\theta}"], data["r_v"], data["r_{\omega}"])
-    H = Agent("H", data["h_x"], data["h_y"], data["h_{\theta}"], data["h_v"], data["h_{\omega}"])
+    H = Agent("H", data["h_x"], data["h_y"], data["h_{\theta}"], abs(data["h_v"]), data["h_{\omega}"])
     RG = Agent("RG", data["r_{gx}"], data["r_{gy}"], np.zeros_like(data["r_{gy}"]), np.zeros_like(data["r_{gy}"]), np.zeros_like(data["r_{gy}"]))
     HG = Agent("HG", data["h_{gx}"], data["h_{gy}"], np.zeros_like(data["r_{gy}"]), np.zeros_like(data["r_{gy}"]), np.zeros_like(data["r_{gy}"]))
             
