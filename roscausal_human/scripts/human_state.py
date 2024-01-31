@@ -199,7 +199,7 @@ if __name__ == '__main__':
     rate = rospy.Rate(NODE_RATE)
     
     PEOPLE_TOPIC = rospy.get_param("~people_topic", "/ped/control/teleop_persons")
-    GOAL_SRV = rospy.get_param("~goal_srv", "/hri/human_goal")
+    GOAL_SRV = rospy.get_param("~goal_param", "/hri/human_goal")
     SOURCE_FRAME = rospy.get_param("~source_frame")
     TARGET_FRAME = rospy.get_param("~target_frame", "map")
     
