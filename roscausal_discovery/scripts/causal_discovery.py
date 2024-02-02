@@ -34,14 +34,14 @@ class CausalDiscovery():
         script_path = CDM_DIR + CDM + ".py"
         args = ["python", script_path, "--csvpath", self.csv_path, 
                                     "--csvname", self.dfname,
-                                    "--falpha", FALPHA, 
-                                    "--alpha", ALPHA, 
-                                    "--minlag", MINLAG, 
-                                    "--maxlag", MAXLAG,
-                                    "--resdir", RES_DIR]
+                                    "--falpha", str(FALPHA), 
+                                    "--alpha", str(ALPHA), 
+                                    "--minlag", str(MINLAG), 
+                                    "--maxlag", str(MAXLAG),
+                                    "--resdir", str(RES_DIR)]
 
         result = subprocess.run(args, capture_output=True, text=True)
-        
+        print(result.stdout)
         # Parse the JSON-formatted result
         result_dict = json.loads(result.stdout)
 
