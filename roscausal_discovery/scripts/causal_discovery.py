@@ -1,36 +1,24 @@
 #!/usr/bin/env python
 
 from datetime import datetime
-from enum import Enum
 import glob
+import json
 import os
-from tigramite.independence_tests.gpdc import GPDC
-from fpcmci.CPrinter import CPLevel
-from fpcmci.FPCMCI import FPCMCI
-from fpcmci.preprocessing.data import Data
-from fpcmci.selection_methods.TE import TE, TEestimator
-from fpcmci.basics.constants import LabelType
+import subprocess
+
+import numpy as np
 import rospy
 import pandas as pd
 from roscausal_msgs.msg import CausalModel
 from std_msgs.msg import Header
-from sklearn.utils._testing import ignore_warnings
-from sklearn.exceptions import ConvergenceWarning
 import stat
-
-
-class CausalDiscoveryMethod(Enum):
-    PCMCI = "pcmci"
-    FPCMCI = "fpcmci"
-
 
 NODE_NAME = "roscausal_discovery"
 NODE_RATE = 10 # [Hz]
 
-
 class CausalDiscovery():
     
-    def __init__(self, df: pd.DataFrame, dfname) -> None:
+    def __init__(self, csv_path, dfname) -> None:
         """
         CausalDiscovery constructor
 
@@ -38,43 +26,31 @@ class CausalDiscovery():
             df (pd.DataFrame): csv file converted into a dataframe
             dfname (str): csv file name
         """
-        self.df = df
+        self.csv_path = csv_path
         self.dfname = dfname
         
         
-    @ignore_warnings(category=ConvergenceWarning)
     def run(self):
-        """
-        Run causal discovery algorithm
+        script_path = CDM_DIR + CDM + ".py"
+        args = ["python", script_path, "--csvpath", self.csv_path, 
+                                    "--csvname", self.dfname,
+                                    "--falpha", FALPHA, 
+                                    "--alpha", ALPHA, 
+                                    "--minlag", MINLAG, 
+                                    "--maxlag", MAXLAG,
+                                    "--resdir", RES_DIR]
 
-        Returns:
-            list(str): list of selected features
-            DAG: causal model
-        """
-        df = Data(self.df)
+        result = subprocess.run(args, capture_output=True, text=True)
         
-        cdm = FPCMCI(df, 
-                     f_alpha = FALPHA,
-                     pcmci_alpha = ALPHA,
-                     min_lag = MINLAG, 
-                     max_lag = MAXLAG, 
-                     sel_method = TE(TEestimator.Gaussian), 
-                     val_condtest = GPDC(significance = 'analytic', gp_params = None),
-                     verbosity = CPLevel.NONE,
-                     neglect_only_autodep = True,
-                     resfolder = RES_DIR + '/' + self.dfname if RES_DIR != "" else None)
-        
-        if CDM == CausalDiscoveryMethod.FPCMCI.value:
-            feature, causalmodel = cdm.run()
-        elif CDM == CausalDiscoveryMethod.PCMCI.value:
-            feature, causalmodel = cdm.run_pcmci()
-        
-        if RES_DIR != "" and len(feature) > 0:   
-            cdm.dag(label_type = LabelType.NoLabels)
-            cdm.timeseries_dag()
-            self.df.to_csv(RES_DIR + '/' + self.dfname + '.csv')
-        
-        return feature, causalmodel
+        # Parse the JSON-formatted result
+        result_dict = json.loads(result.stdout)
+
+        # Access features and causal model
+        features = result_dict["Features"]
+        cs = np.array(result_dict["Skeleton"])
+        val = np.array(result_dict["ValMatrix"])
+        pval = np.array(result_dict["PValMatrix"])
+        return features, cs, val, pval
         
 
 def extract_timestamp_from_filename(file_path, file_extension='.csv'):
@@ -123,7 +99,8 @@ def get_file(file_extension='.csv'):
     oldest_file = min(files, key=lambda file: extract_timestamp_from_filename(file))
     filename = os.path.basename(oldest_file)
     return oldest_file, filename[:filename.find(file_extension)]
-                
+
+               
                 
 if __name__ == '__main__':
     # Node
@@ -131,6 +108,7 @@ if __name__ == '__main__':
     rate = rospy.Rate(NODE_RATE)
     
     CDM = str(rospy.get_param("~cd_method", default = "fpcmci"))
+    CDM_DIR = str(rospy.get_param("~cd_method_dir"))
     FALPHA = float(rospy.get_param("~filter_alpha", default = 0.05))
     ALPHA = float(rospy.get_param("~sig_alpha", default = 0.05))
     MINLAG = int(rospy.get_param("~min_lag", default = 1))
@@ -152,19 +130,15 @@ if __name__ == '__main__':
         csv, name = get_file()
         if csv is not None:
             rospy.logwarn("Causal analysis on: " + csv)
-            d = pd.read_csv(csv)
                 
-            dc = CausalDiscovery(d, name)
-            f, cm = dc.run()
+            dc = CausalDiscovery(csv, name)
+            f, cs, val, pval = dc.run()
             
             if len(f) > 0:
                 msg = CausalModel()
                 msg.header = Header()
                 msg.header.stamp = rospy.Time.now()
                 
-                cs = cm.get_skeleton()
-                val = cm.get_val_matrix()
-                pval = cm.get_pval_matrix()
                 rospy.logwarn("Features: " + str(f))
                 rospy.logwarn("Causal Structure: " + str(cs))
                 rospy.logwarn("Val Matrix: " + str(val))
