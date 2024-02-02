@@ -16,6 +16,7 @@ import stat
 NODE_NAME = "roscausal_discovery"
 NODE_RATE = 10 # [Hz]
 
+
 class CausalDiscovery():
     
     def __init__(self, csv_path, dfname) -> None:
@@ -29,27 +30,30 @@ class CausalDiscovery():
         self.csv_path = csv_path
         self.dfname = dfname
         
-        
+
     def run(self):
-        script_path = CDM_DIR + CDM + ".py"
-        args = ["python", script_path, "--csvpath", self.csv_path, 
-                                    "--csvname", self.dfname,
-                                    "--falpha", str(FALPHA), 
-                                    "--alpha", str(ALPHA), 
-                                    "--minlag", str(MINLAG), 
-                                    "--maxlag", str(MAXLAG),
-                                    "--resdir", str(RES_DIR)]
+        script_module = __import__(CDM_DIR + CDM + ".py")
+        run_cdm = getattr(script_module, "run")
+        features, cs, val, pval = run_cdm(self.csv_path, self.dfname, ALPHA, MINLAG, MAXLAG, RES_DIR)
 
-        result = subprocess.run(args, capture_output=True, text=True)
-        print(result.stdout)
-        # Parse the JSON-formatted result
-        result_dict = json.loads(result.stdout)
+        # args = ["python", script_path, "--csvpath", self.csv_path, 
+        #                             "--csvname", self.dfname,
+        #                             "--falpha", str(FALPHA), 
+        #                             "--alpha", str(ALPHA), 
+        #                             "--minlag", str(MINLAG), 
+        #                             "--maxlag", str(MAXLAG),
+        #                             "--resdir", str(RES_DIR)]
 
-        # Access features and causal model
-        features = result_dict["Features"]
-        cs = np.array(result_dict["Skeleton"])
-        val = np.array(result_dict["ValMatrix"])
-        pval = np.array(result_dict["PValMatrix"])
+        # result = subprocess.run(args, capture_output=True, text=True)
+        # print(result.stdout)
+        # # Parse the JSON-formatted result
+        # result_dict = json.loads(result.stdout)
+
+        # # Access features and causal model
+        # features = result_dict["Features"]
+        # cs = np.array(result_dict["Skeleton"])
+        # val = np.array(result_dict["ValMatrix"])
+        # pval = np.array(result_dict["PValMatrix"])
         return features, cs, val, pval
         
 
