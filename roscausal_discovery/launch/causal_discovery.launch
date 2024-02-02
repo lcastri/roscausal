@@ -13,7 +13,8 @@
   <node name="roscausal_discovery" pkg="roscausal_discovery" type="causal_discovery.py" output="screen">
     <param name="data_dir"   value="$(arg data_dir)"/> 
     <param name="res_dir"   value="$(arg res_dir)"/> 
-    <param name="cd_method"   value="$(arg cd_method)"/> 
+    <param name="cd_method"   value="$(arg cd_method)"/>
+    <param name="cd_method_dir"   value="$(arg cd_method_dir)"/>
     <param name="sig_alpha"   value="$(arg sig_alpha)"/>
     <param name="filter_alpha"   value="$(arg filter_alpha)"/>
     <param name="min_lag"   value="$(arg min_lag)"/>

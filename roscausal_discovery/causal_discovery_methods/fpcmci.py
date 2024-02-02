@@ -8,6 +8,7 @@ from fpcmci.basics.constants import LabelType
 
 
 if __name__ == '__main__':
+    print("I AM HERE")
     parser = argparse.ArgumentParser()
     parser.add_argument("--csvpath", help="CSV path")
     parser.add_argument("--csvname", help="CSV file name")
