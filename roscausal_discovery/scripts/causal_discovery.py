@@ -93,7 +93,6 @@ if __name__ == '__main__':
     rate = rospy.Rate(NODE_RATE)
     
     CDM = str(rospy.get_param("~cd_method", default = "fpcmci"))
-    CDM_DIR = str(rospy.get_param("~cd_method_dir"))
     ALPHA = float(rospy.get_param("~sig_alpha", default = 0.05))
     MINLAG = int(rospy.get_param("~min_lag", default = 1))
     MAXLAG = int(rospy.get_param("~max_lag", default = 1))
