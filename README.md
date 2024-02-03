@@ -51,7 +51,8 @@ If you want to integrate new causal discovery methods, you need to add a Python 
 * alpha: significance level
 * minlag: minimum time lag for causal analysis 
 * maxlag: maximum time lag for causal analysis
-* resdir: resutl directory
+* resdir: result directory
+  
 Moreover, it must output the list of features and the three matrices for the CausalModel msg (causal_structure, val_matrix, pval_matrix).
 
 ## ROS messages
