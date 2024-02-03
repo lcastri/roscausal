@@ -1,4 +1,3 @@
-import argparse
 from tigramite.independence_tests.gpdc import GPDC
 from fpcmci.CPrinter import CPLevel
 from fpcmci.FPCMCI import FPCMCI
@@ -8,23 +7,6 @@ from fpcmci.basics.constants import LabelType
 
 
 def run(csvpath, csvname, alpha, minlag, maxlag, resdir):
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument("--csvpath", help="CSV path")
-    # parser.add_argument("--csvname", help="CSV file name")
-    # parser.add_argument("--falpha", help="filter significance level")
-    # parser.add_argument("--alpha", help="causal significance level")
-    # parser.add_argument("--minlag", help="Minimum time lag")
-    # parser.add_argument("--maxlag", help="Maximum time lag")
-    # parser.add_argument("--resdir", help="Result directory")
-    # args = parser.parse_args()
-    
-    # CSV = args.csvpath
-    # CSVNAME = args.csvname
-    # FALPHA = float(args.falpha)
-    # ALPHA = float(args.alpha)
-    # MINLAG = int(args.minlag)
-    # MAXLAG = int(args.maxlag)
-    # RES_DIR = args.resdir
 
     df = Data(csvpath)
         
@@ -37,9 +19,10 @@ def run(csvpath, csvname, alpha, minlag, maxlag, resdir):
                  val_condtest = GPDC(significance = 'analytic', gp_params = None),
                  verbosity = CPLevel.NONE,
                  neglect_only_autodep = True,
+                 clean_cls=False,
                  resfolder = resdir + '/' + csvname if resdir != "" else None)
         
-    feature, cm = cdm.run()
+    feature, cm = cdm.run_pcmci()
     
     cs = None
     val = None

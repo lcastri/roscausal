@@ -2,16 +2,14 @@
 
 from datetime import datetime
 import glob
-import json
 import os
-import subprocess
-
-import numpy as np
 import rospy
-import pandas as pd
 from roscausal_msgs.msg import CausalModel
 from std_msgs.msg import Header
 import stat
+import importlib
+from inspect import isfunction
+    
 
 NODE_NAME = "roscausal_discovery"
 NODE_RATE = 10 # [Hz]
@@ -32,28 +30,11 @@ class CausalDiscovery():
         
 
     def run(self):
-        script_module = __import__(CDM_DIR + CDM + ".py")
-        run_cdm = getattr(script_module, "run")
-        features, cs, val, pval = run_cdm(self.csv_path, self.dfname, ALPHA, MINLAG, MAXLAG, RES_DIR)
-
-        # args = ["python", script_path, "--csvpath", self.csv_path, 
-        #                             "--csvname", self.dfname,
-        #                             "--falpha", str(FALPHA), 
-        #                             "--alpha", str(ALPHA), 
-        #                             "--minlag", str(MINLAG), 
-        #                             "--maxlag", str(MAXLAG),
-        #                             "--resdir", str(RES_DIR)]
-
-        # result = subprocess.run(args, capture_output=True, text=True)
-        # print(result.stdout)
-        # # Parse the JSON-formatted result
-        # result_dict = json.loads(result.stdout)
-
-        # # Access features and causal model
-        # features = result_dict["Features"]
-        # cs = np.array(result_dict["Skeleton"])
-        # val = np.array(result_dict["ValMatrix"])
-        # pval = np.array(result_dict["PValMatrix"])
+        module = importlib.import_module("causal_discovery_methods." + CDM)
+        for attribute_name in dir(module):
+            attribute = getattr(module, attribute_name)
+            if isfunction(attribute) and attribute_name == "run":
+                features, cs, val, pval = attribute(self.csv_path, self.dfname, ALPHA, MINLAG, MAXLAG, RES_DIR)
         return features, cs, val, pval
         
 
@@ -113,7 +94,6 @@ if __name__ == '__main__':
     
     CDM = str(rospy.get_param("~cd_method", default = "fpcmci"))
     CDM_DIR = str(rospy.get_param("~cd_method_dir"))
-    FALPHA = float(rospy.get_param("~filter_alpha", default = 0.05))
     ALPHA = float(rospy.get_param("~sig_alpha", default = 0.05))
     MINLAG = int(rospy.get_param("~min_lag", default = 1))
     MAXLAG = int(rospy.get_param("~max_lag", default = 1))
