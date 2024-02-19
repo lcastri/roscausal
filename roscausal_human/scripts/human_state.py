@@ -5,7 +5,7 @@ from roscausal_msgs.msg import HumanState, Humans
 from pedsim_msgs.msg import TrackedPersons, AgentStates
 import tf
 from std_msgs.msg import Header
-from geometry_msgs.msg import Pose2D, Twist, PoseWithCovariance
+from geometry_msgs.msg import Pose2D, Twist, PoseWithCovariance, Pose
 from shapely.geometry import *
 
 
@@ -13,25 +13,39 @@ NODE_NAME = "roscausal_human"
 NODE_RATE = 10 # [Hz]
 
 
-def get_2DPose(p: PoseWithCovariance):
+def get_2DPose(p):
     """
     Extracts x, y and theta from pose
     
     Args:
-        p (PoseWithCovarianceStamped): pose
+        p (Pose or PoseWithCovariance): pose
     
     Returns:
         tuple: x, y, theta
     """
-    x = p.pose.position.x
-    y = p.pose.position.y
-    
-    q = (
-        p.pose.orientation.x,
-        p.pose.orientation.y,
-        p.pose.orientation.z,
-        p.pose.orientation.w
-    )
+    if isinstance(p, PoseWithCovariance):
+        x = p.pose.position.x
+        y = p.pose.position.y
+
+        q = (
+            p.pose.orientation.x,
+            p.pose.orientation.y,
+            p.pose.orientation.z,
+            p.pose.orientation.w
+        )
+    elif isinstance(p, Pose):
+        x = p.position.x
+        y = p.position.y
+
+        q = (
+            p.orientation.x,
+            p.orientation.y,
+            p.orientation.z,
+            p.orientation.w
+        )
+    else:
+        raise ValueError("Unsupported pose type. Expected Pose or PoseWithCovariance.")
+
     m = tf.transformations.quaternion_matrix(q)
     _, _, yaw = tf.transformations.euler_from_matrix(m)
     return Pose2D(x, y, yaw)
@@ -153,10 +167,9 @@ if __name__ == '__main__':
 
     while not rospy.is_shutdown():
         humans = Humans()
+        humans.header = Header()
+        humans.header.stamp = rospy.Time.now()
         humans.humans = H.humans
         H.pub_human_state.publish(humans)
-        
-        # FIXME: not needed
-        H.humans = list()
         
         rate.sleep()
