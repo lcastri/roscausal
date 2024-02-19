@@ -7,7 +7,7 @@ import tf
 from std_msgs.msg import Header
 from geometry_msgs.msg import Pose2D, Twist, PoseWithCovariance
 from shapely.geometry import *
-import message_filters
+
 
 NODE_NAME = "roscausal_human"
 NODE_RATE = 10 # [Hz]
@@ -90,7 +90,12 @@ class HumanStateClass():
         else:
             msg.goal = Point(msg.pose2D.x, msg.pose2D.y, 0)
         
-        # FIXME: check if the agent that is going to be addedd already axists. If so, then update it
+        # Check if the agent already exists in self.humans. If so, remove it before appending the new msg
+        for existing_msg in self.humans:
+            if existing_msg.id == msg.id:
+                self.humans.remove(existing_msg)
+                break
+
         self.humans.append(msg)
         
         
@@ -123,7 +128,12 @@ class HumanStateClass():
             
             msg.goal = person.goal
             
-            # FIXME: check if the agent that is going to be addedd already axists. If so, then update it
+            # Check if the agent already exists in self.humans. If so, remove it before appending the new msg
+            for existing_msg in self.humans:
+                if existing_msg.id == msg.id:
+                    self.humans.remove(existing_msg)
+                    break
+
             self.humans.append(msg)
                 
 
