@@ -2,7 +2,7 @@
 
 import rospy
 from roscausal_msgs.msg import HumanState, Humans
-from pedsim_msgs.msg import TrackedPersons
+from pedsim_msgs.msg import TrackedPersons, AgentStates
 import tf
 from std_msgs.msg import Header
 from geometry_msgs.msg import Pose2D, Twist, PoseWithCovariance
@@ -53,7 +53,7 @@ class HumanStateClass():
         rospy.Subscriber(TELEOP_PEOPLE_TOPIC, TrackedPersons, self.get_teleop_data)
         
         # Autonomous agents subscriber
-        rospy.Subscriber(AUTO_PEOPLE_TOPIC, TrackedPersons, self.get_auto_data)
+        rospy.Subscriber(AUTO_PEOPLE_TOPIC, AgentStates, self.get_auto_data)
         
         
     def get_teleop_data(self, people: TrackedPersons):
@@ -90,17 +90,18 @@ class HumanStateClass():
         else:
             msg.goal = Point(msg.pose2D.x, msg.pose2D.y, 0)
         
+        # FIXME: check if the agent that is going to be addedd already axists. If so, then update it
         self.humans.append(msg)
         
         
-    def get_auto_data(self, people: TrackedPersons):
+    def get_auto_data(self, people: AgentStates):
         """
         Autonomous people callback
 
         Args:
             people (TrackedPersons): people
         """
-        for person in people.tracks:
+        for person in people.agent_states:
             state = get_2DPose(person.pose)
         
             # msg
@@ -108,24 +109,23 @@ class HumanStateClass():
             msg.header = Header()
             msg.header.stamp = rospy.Time.now()
             msg.header.frame_id = TARGET_FRAME
-            msg.id = int(person.track_id)
+            msg.id = int(person.id)
             msg.pose2D = Pose2D(state.x, state.y, state.theta)
             
             twist = Twist()
-            twist.linear.x = person.twist.twist.linear.x
-            twist.linear.y = person.twist.twist.linear.y
-            twist.linear.z = person.twist.twist.linear.z
-            twist.angular.x = person.twist.twist.angular.x
-            twist.angular.y = person.twist.twist.angular.y
-            twist.angular.z = person.twist.twist.angular.z        
+            twist.linear.x = person.twist.linear.x
+            twist.linear.y = person.twist.linear.y
+            twist.linear.z = person.twist.linear.z
+            twist.angular.x = person.twist.angular.x
+            twist.angular.y = person.twist.angular.y
+            twist.angular.z = person.twist.angular.z        
             msg.twist = twist
             
             msg.goal = person.goal
             
+            # FIXME: check if the agent that is going to be addedd already axists. If so, then update it
             self.humans.append(msg)
-        
-        # self.pub_human_state.publish(msg)               
-        
+                
 
 if __name__ == '__main__':
     
@@ -133,7 +133,7 @@ if __name__ == '__main__':
     rospy.init_node(NODE_NAME, anonymous=True)
     rate = rospy.Rate(NODE_RATE)
     
-    AUTO_PEOPLE_TOPIC = rospy.get_param("~auto_people_topic", "/pedsim_visualizer/tracked_persons")
+    AUTO_PEOPLE_TOPIC = rospy.get_param("~auto_people_topic", "/pedsim_simulator/simulated_agents")
     TELEOP_PEOPLE_TOPIC = rospy.get_param("~teleop_people_topic", "/ped/control/teleop_persons")
     GOAL_PARAM = rospy.get_param("~goal_param", "/hri/human_goal")
     SOURCE_FRAME = rospy.get_param("~source_frame")
@@ -144,6 +144,9 @@ if __name__ == '__main__':
     while not rospy.is_shutdown():
         humans = Humans()
         humans.humans = H.humans
-        H.pub_human_state.publish(humans)    
-                   
+        H.pub_human_state.publish(humans)
+        
+        # FIXME: not needed
+        H.humans = list()
+        
         rate.sleep()
