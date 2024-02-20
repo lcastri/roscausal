@@ -2,7 +2,7 @@
   <arg name="data_dir" default = "$(find roscausal_data)/data_pool/"/>
   <arg name="pp_data_dir" default = "$(find roscausal_data)/pp_pool/"/>
   <arg name="pp_script_dir" default = "$(find roscausal_data)/pp_scripts/"/>
-  <arg name="pp_script" default = "postprocess.py"/>
+  <arg name="pp_script" default = ""/>
   <arg name="ts_length" default="150"/> 
   <arg name="dt" default="0.1"/> 
   <arg name="subsampling" default="false"/> 
@@ -10,6 +10,7 @@
   <arg name="csv_prefix" default="data_"/>
   <arg name="obs_size" default="2.0"/>
   <arg name="safe_dist" default="5.0"/>
+  <arg name="sel_agent" default="1000"/>
 
   <node name="roscausal_data" pkg="roscausal_data" type="collecting_data.py" output="screen">
     <param name="data_dir"   value="$(arg data_dir)"/> 
@@ -23,6 +24,7 @@
     <param name="pp_script" value = "$(arg pp_script)"/>
     <param name="obs_size" value = "$(arg obs_size)"/>
     <param name="safe_dist" value = "$(arg safe_dist)"/>
+    <param name="sel_agent" value = "$(arg sel_agent)"/>
   </node>
  
 </launch>

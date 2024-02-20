@@ -7,8 +7,7 @@ import rospy
 import pandas as pd
 import os
 import message_filters
-from roscausal_msgs.msg import HumanState
-from roscausal_msgs.msg import RobotState
+from roscausal_msgs.msg import HumanState, Humans, RobotState
 
 
 NODE_NAME = "roscausal_data"
@@ -27,7 +26,7 @@ class DataCollector():
         sub_robot = message_filters.Subscriber("/roscausal/robot", RobotState)
         
         # Person subscriber
-        sub_people = message_filters.Subscriber('/roscausal/human', HumanState)
+        sub_people = message_filters.Subscriber('/roscausal/human', Humans)
                         
         # Init synchronizer and assigning a callback 
         self.ats = message_filters.ApproximateTimeSynchronizer([sub_robot, 
@@ -39,13 +38,13 @@ class DataCollector():
                     
 
                               
-    def cb_handle_data(self, robot: RobotState, human: HumanState):
+    def cb_handle_data(self, robot: RobotState, people: Humans):
         """
         Synchronized callback
 
         Args:
             robot (RobotState): robot state
-            human (HumanState): tracked person
+            people (Humans): tracked person
         """
         time_now = robot.header.stamp.to_sec()
         if self.time_init is None or (time_now - self.time_init >= TS_LENGTH):
@@ -69,14 +68,16 @@ class DataCollector():
                                                                                 "--data_dir", DATA_DIR,
                                                                                 "--pp_data_dir", PP_DATA_DIR,
                                                                                 "--obs_size", OBS_SIZE,
-                                                                                "--safe_dist", SAFE_DIST])
+                                                                                "--safe_dist", SAFE_DIST,
+                                                                                "--sel_agent", SEL_AGENT])
             
             # Init dataframe
-            columns = ['time', 'r_{gx}', 'r_{gy}', 'r_x', 'r_y', 'r_{\theta}', 'r_v', 'r_{\omega}', 'h_{gx}', 'h_{gy}', 'h_x', 'h_y', 'h_{\theta}', 'h_v', 'h_{\omega}']
+            columns = ['time', 'r_{gx}', 'r_{gy}', 'r_x', 'r_y', 'r_{\theta}', 'r_v', 'r_{\omega}']
             self.raw = pd.DataFrame(columns=columns)
             self.time_init = time_now
 
-        # Robot 2D pose (x, y, theta) and velocity
+        new_row_loc = len(self.raw)
+
         r_x = robot.pose2D.x
         r_y = robot.pose2D.y
         r_theta = robot.pose2D.theta
@@ -84,22 +85,28 @@ class DataCollector():
         r_w = robot.twist.angular.z
         r_g = robot.goal
         
-        # Human 2D pose (x, y, theta) and velocity            
-        h_x = human.pose2D.x
-        h_y = human.pose2D.y
-        h_theta = human.pose2D.theta
-        h_v = math.sqrt(human.twist.linear.x**2 + human.twist.linear.y**2)
-        h_w = human.twist.angular.z
-        h_g = human.goal
+        self.raw.loc[new_row_loc] = {'time': robot.header.stamp.to_sec(),
+                                    'r_{gx}': r_g.x, 'r_{gy}': r_g.y,
+                                    'r_x': r_x, 'r_y': r_y, 
+                                    'r_{\theta}': r_theta, 'r_v': r_v, 'r_{\omega}': r_w,}
+        
+        for human in people.humans:        
+            h_id = human.id
+            if f'h_{h_id}_x' not in self.raw.columns: self.raw[f'h_{h_id}_x'] = None    
+            if f'h_{h_id}_y' not in self.raw.columns: self.raw[f'h_{h_id}_y'] = None    
+            if f'h_{h_id}'+'_{\theta}' not in self.raw.columns: self.raw[f'h_{h_id}'+'_{\theta}'] = None    
+            if f'h_{h_id}_v' not in self.raw.columns: self.raw[f'h_{h_id}_v'] = None    
+            if f'h_{h_id}'+'_{\omega}' not in self.raw.columns: self.raw[f'h_{h_id}'+'_{\omega}'] = None    
+            if f'h_{h_id}'+'_{gx}' not in self.raw.columns: self.raw[f'h_{h_id}'+'_{gx}'] = None    
+            if f'h_{h_id}'+'_{gy}' not in self.raw.columns: self.raw[f'h_{h_id}'+'_{gy}'] = None    
+            self.raw.loc[new_row_loc,f'h_{h_id}_x'] = human.pose2D.x
+            self.raw.loc[new_row_loc,f'h_{h_id}_y'] = human.pose2D.y
+            self.raw.loc[new_row_loc,f'h_{h_id}'+'_{\theta}'] = human.pose2D.theta
+            self.raw.loc[new_row_loc,f'h_{h_id}_v'] = math.sqrt(human.twist.linear.x**2 + human.twist.linear.y**2)
+            self.raw.loc[new_row_loc,f'h_{h_id}'+'_{\omega}'] = human.twist.angular.z
+            self.raw.loc[new_row_loc,f'h_{h_id}'+'_{gx}'] = human.goal.x
+            self.raw.loc[new_row_loc,f'h_{h_id}'+'_{gy}'] = human.goal.y
 
-        self.raw.loc[len(self.raw)] = {'time': robot.header.stamp.to_sec(),
-                                     'r_{gx}': r_g.x, 'r_{gy}': r_g.y,
-                                     'r_x': r_x, 'r_y': r_y, 
-                                     'r_{\theta}': r_theta, 'r_v': r_v, 'r_{\omega}': r_w,
-                                     'h_{gx}': h_g.x, 'h_{gy}': h_g.y,
-                                     'h_x': h_x, 'h_y': h_y,
-                                     'h_{\theta}': h_theta, 'h_v': h_v, 'h_{\omega}': h_w,
-                                    }
         
         
     def subsampling(self, df: pd.DataFrame, dt, tol = 0.01):
@@ -140,6 +147,7 @@ if __name__ == '__main__':
     PP_SCRIPT = str(rospy.get_param("~pp_script"))
     OBS_SIZE = str(rospy.get_param("~obs_size"))
     SAFE_DIST = str(rospy.get_param("~safe_dist"))
+    SEL_AGENT = str(rospy.get_param("~sel_agent"))
     
     # Create data pool directory
     os.makedirs(DATA_DIR, exist_ok=True)
