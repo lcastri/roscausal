@@ -59,6 +59,10 @@ class DataCollector():
                 if SUBSAMPLING: self.raw = self.subsampling(self.raw, DT)
                 timestamp_str = datetime.now().strftime(ID_FORMAT)
                 csv_name = CSV_PREFIX + timestamp_str + '.csv'
+                
+                self.raw.ffill()
+                self.raw.bfill()
+                
                 rospy.logwarn("CSV file saved: " + csv_name)
                 self.raw.to_csv(DATA_DIR + '/' + csv_name, index=False)
                 
