@@ -73,6 +73,18 @@ The **CausalModel** message stores a list of variables, three matrices derived f
 ## Requirements
 The ROS-Causal library requires the [F-PCMCI](https://github.com/lcastri/fpcmci) for the causal discovery analysis.
 
+## Citation
+
+If you found this useful for your work, please cite this papers:
+```
+@inproceedings{roscausal2024,
+  author    = {Castri, Luca and Beraldo, Gloria and Mghames, Sariah and Hanheide, Marc and Bellotto, Nicola},
+  title     = {{ROS-Causal}: A {ROS}-based Causal Analysis Framework for Human-Robot Interaction Applications},
+  booktitle = {Causal-HRI: Causal Learning for Human-Robot Interaction Workshop at the 2024 ACM/IEEE International Conference on Human-Robot Interaction (HRI)},
+  year      = {2024},
+}
+```
+
 ## Recent changes
 | Version | Changes |
 | :---: | ----------- |
