@@ -58,16 +58,19 @@ class HumanStateClass():
         HumanState constructor
         """
         
-        self.humans = list()
+        self.teleop_humans = list()
+        self.auto_humans = list()
                 
         # Human publisher     
         self.pub_human_state = rospy.Publisher('/roscausal/human', Humans, queue_size=10)
         
         # Teleop agent subscriber
-        rospy.Subscriber(TELEOP_PEOPLE_TOPIC, TrackedPersons, self.get_teleop_data)
+        if TELEOP_PEOPLE_TOPIC is not None:
+            rospy.Subscriber(TELEOP_PEOPLE_TOPIC, TrackedPersons, self.get_teleop_data)
         
         # Autonomous agents subscriber
-        rospy.Subscriber(AUTO_PEOPLE_TOPIC, AgentStates, self.get_auto_data)
+        if AUTO_PEOPLE_TOPIC is not None:
+            rospy.Subscriber(AUTO_PEOPLE_TOPIC, AgentStates, self.get_auto_data)
         
         
     def get_teleop_data(self, people: TrackedPersons):
@@ -77,7 +80,9 @@ class HumanStateClass():
         Args:
             people (TrackedPersons): people
         """
-        pg = rospy.get_param(GOAL_PARAM, None)
+        self.teleop_humans = list()
+        
+        pg = rospy.get_param(GOAL_PARAM, None) if GOAL_PARAM is not None else None
         
         person = people.tracks[0]
         state = get_2DPose(person.pose)
@@ -104,13 +109,7 @@ class HumanStateClass():
         else:
             msg.goal = Point(msg.pose2D.x, msg.pose2D.y, 0)
         
-        # Check if the agent already exists in self.humans. If so, remove it before appending the new msg
-        for existing_msg in self.humans:
-            if existing_msg.id == msg.id:
-                self.humans.remove(existing_msg)
-                break
-
-        self.humans.append(msg)
+        self.teleop_humans.append(msg)
         
         
     def get_auto_data(self, people: AgentStates):
@@ -120,6 +119,8 @@ class HumanStateClass():
         Args:
             people (TrackedPersons): people
         """
+        self.auto_humans = list()
+        
         for person in people.agent_states:
             state = get_2DPose(person.pose)
         
@@ -142,13 +143,7 @@ class HumanStateClass():
             
             msg.goal = person.goal
             
-            # Check if the agent already exists in self.humans. If so, remove it before appending the new msg
-            for existing_msg in self.humans:
-                if existing_msg.id == msg.id:
-                    self.humans.remove(existing_msg)
-                    break
-
-            self.humans.append(msg)
+            self.auto_humans.append(msg)
                 
 
 if __name__ == '__main__':
@@ -157,9 +152,15 @@ if __name__ == '__main__':
     rospy.init_node(NODE_NAME, anonymous=True)
     rate = rospy.Rate(NODE_RATE)
     
-    AUTO_PEOPLE_TOPIC = rospy.get_param("~auto_people_topic", "/pedsim_simulator/simulated_agents")
-    TELEOP_PEOPLE_TOPIC = rospy.get_param("~teleop_people_topic", "/ped/control/teleop_persons")
-    GOAL_PARAM = rospy.get_param("~goal_param", "/hri/human_goal")
+    AUTO_PEOPLE_TOPIC = rospy.get_param("~auto_people_topic", "")
+    AUTO_PEOPLE_TOPIC = None if AUTO_PEOPLE_TOPIC == "" else AUTO_PEOPLE_TOPIC
+    
+    TELEOP_PEOPLE_TOPIC = rospy.get_param("~teleop_people_topic", "")
+    TELEOP_PEOPLE_TOPIC = None if TELEOP_PEOPLE_TOPIC == "" else TELEOP_PEOPLE_TOPIC
+    
+    GOAL_PARAM = rospy.get_param("~goal_param", "")
+    GOAL_PARAM = None if GOAL_PARAM == "" else GOAL_PARAM
+    
     SOURCE_FRAME = rospy.get_param("~source_frame")
     TARGET_FRAME = rospy.get_param("~target_frame", "map")
     
@@ -169,7 +170,9 @@ if __name__ == '__main__':
         humans = Humans()
         humans.header = Header()
         humans.header.stamp = rospy.Time.now()
-        humans.humans = H.humans
+        humans.humans = H.teleop_humans + H.auto_humans
         H.pub_human_state.publish(humans)
+        H.teleop_humans = list()
+        H.auto_humans = list()
         
         rate.sleep()
