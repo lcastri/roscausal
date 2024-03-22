@@ -7,8 +7,7 @@ import rospy
 import pandas as pd
 import os
 import message_filters
-from roscausal_msgs.msg import HumanState
-from roscausal_msgs.msg import RobotState
+from roscausal_msgs.msg import HumanState, RobotState
 
 
 NODE_NAME = "roscausal_data"
