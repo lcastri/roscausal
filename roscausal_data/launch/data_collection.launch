@@ -3,7 +3,7 @@
   <arg name="pp_data_dir" default = "$(find roscausal_data)/pp_pool/"/>
   <arg name="pp_script_dir" default = "$(find roscausal_data)/pp_scripts/"/>
   <arg name="pp_script" default = ""/>
-  <arg name="ts_length" default="150"/> 
+  <arg name="ts_length" default=""/> 
   <arg name="dt" default="0.1"/> 
   <arg name="subsampling" default="false"/> 
   <arg name="id_format" default="%Y%m%d_%H%M%S"/>

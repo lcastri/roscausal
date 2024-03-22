@@ -10,6 +10,7 @@ import message_filters
 from roscausal_msgs.msg import HumanState, Humans, RobotState
 
 
+
 NODE_NAME = "roscausal_data"
 NODE_RATE = 10 # [Hz]
 
@@ -49,8 +50,9 @@ class DataCollector():
             timestamp_str = datetime.now().strftime(ID_FORMAT)
             csv_name = CSV_PREFIX + timestamp_str + '.csv'
                 
-            self.raw.ffill(inplace=True)
-            self.raw.bfill(inplace=True)
+
+            self.raw.interpolate(method='linear', axis=0, inplace=True)
+            self.raw.bfill(axis=0, inplace=True)
                 
             rospy.logwarn("CSV file saved: " + csv_name)
             self.raw.to_csv(DATA_DIR + '/' + csv_name, sep=',', index=False)
@@ -74,11 +76,11 @@ class DataCollector():
             people (Humans): tracked person
         """
         time_now = robot.header.stamp.to_sec()
-        if self.time_init is None or (time_now - self.time_init >= TS_LENGTH):
+        if self.time_init is None or (TS_LENGTH is not None and (time_now - self.time_init >= TS_LENGTH)):
             
             # Save currect dataframe
             self.save_csv()
-            
+
             # Init dataframe
             columns = ['time', 'r_{gx}', 'r_{gy}', 'r_x', 'r_y', 'r_{\theta}', 'r_v', 'r_{\omega}']
             self.raw = pd.DataFrame(columns=columns)
@@ -143,7 +145,8 @@ if __name__ == '__main__':
     rospy.init_node(NODE_NAME, anonymous=True)
     rate = rospy.Rate(NODE_RATE)
     
-    TS_LENGTH = float(rospy.get_param("~ts_length", default = 150)) # [s]
+    ts_length_param = rospy.get_param("~ts_length")
+    TS_LENGTH = float(ts_length_param) if ts_length_param else None
     DATA_DIR = str(rospy.get_param("~data_dir"))
     DT = float(rospy.get_param("~dt", default = 0.1))
     SUBSAMPLING = bool(rospy.get_param("~subsampling", default = False))
@@ -161,6 +164,10 @@ if __name__ == '__main__':
     if PP_SCRIPT != "": os.makedirs(PP_DATA_DIR, exist_ok=True)
     
     dc = DataCollector()
+    
+    def cleanup():
+        rospy.logerr("NODE STOPPED")
+        dc.save_csv()
 
     def cleanup():
         rospy.logerr("NODE STOPPED")
