@@ -36,9 +36,36 @@ class DataCollector():
                                                                 allow_headerless = True)
 
         self.ats.registerCallback(self.cb_handle_data)
+        
+        
+    def save_csv(self):
+        # Save currect dataframe
+        if self.raw is not None:
+            # this is to make sure that the dataframe contains data with time in ascending order.
+            # with ApproximateTimeSynchronizer might not be always true
+            self.raw.sort_values(by = 'time', ascending = True, inplace = True, ignore_index = True)
+                
+            # subsample your dataset
+            if SUBSAMPLING: self.raw = self.subsampling(self.raw, DT)
+            timestamp_str = datetime.now().strftime(ID_FORMAT)
+            csv_name = CSV_PREFIX + timestamp_str + '.csv'
+                
+            self.raw.interpolate(method='linear', axis=0, inplace=True)
+            self.raw.bfill(axis=0, inplace=True)
+                
+            rospy.logwarn("CSV file saved: " + csv_name)
+            self.raw.to_csv(DATA_DIR + '/' + csv_name, sep=',', index=False)
+                
+            if PP_SCRIPT != "":
+                rospy.logwarn("Postprocessing file: " + csv_name)
+                subprocess.check_call(["python", PP_SCRIPT_DIR + PP_SCRIPT, "--csv", csv_name,
+                                                                            "--data_dir", DATA_DIR,
+                                                                            "--pp_data_dir", PP_DATA_DIR,
+                                                                            "--obs_size", OBS_SIZE,
+                                                                            "--safe_dist", SAFE_DIST,
+                                                                            "--sel_agent", SEL_AGENT])
                     
-
-                              
+             
     def cb_handle_data(self, robot: RobotState, human: HumanState):
         """
         Synchronized callback
@@ -48,29 +75,11 @@ class DataCollector():
             human (HumanState): tracked person
         """
         time_now = robot.header.stamp.to_sec()
-        if self.time_init is None or (time_now - self.time_init >= TS_LENGTH):
+        if self.time_init is None or (TS_LENGTH is not None and (time_now - self.time_init >= TS_LENGTH)):
             
             # Save currect dataframe
-            if self.raw is not None:
-                # this is to make sure that the dataframe contains data with time in ascending order.
-                # with ApproximateTimeSynchronizer might not be always true
-                self.raw.sort_values(by = 'time', ascending = True, inplace = True, ignore_index = True)
-                
-                # subsample your dataset
-                if SUBSAMPLING: self.raw = self.subsampling(self.raw, DT)
-                timestamp_str = datetime.now().strftime(ID_FORMAT)
-                csv_name = CSV_PREFIX + timestamp_str + '.csv'
-                rospy.logwarn("CSV file saved: " + csv_name)
-                self.raw.to_csv(DATA_DIR + '/' + csv_name, index=False)
-                
-                if PP_SCRIPT != "":
-                    rospy.logwarn("Postprocessing file: " + csv_name)
-                    subprocess.check_call(["python", PP_SCRIPT_DIR + PP_SCRIPT, "--csv", csv_name,
-                                                                                "--data_dir", DATA_DIR,
-                                                                                "--pp_data_dir", PP_DATA_DIR,
-                                                                                "--obs_size", OBS_SIZE,
-                                                                                "--safe_dist", SAFE_DIST])
-            
+            self.save_csv()
+                       
             # Init dataframe
             columns = ['time', 'r_{gx}', 'r_{gy}', 'r_x', 'r_y', 'r_{\theta}', 'r_v', 'r_{\omega}', 'h_{gx}', 'h_{gy}', 'h_x', 'h_y', 'h_{\theta}', 'h_v', 'h_{\omega}']
             self.raw = pd.DataFrame(columns=columns)
@@ -129,7 +138,8 @@ if __name__ == '__main__':
     rospy.init_node(NODE_NAME, anonymous=True)
     rate = rospy.Rate(NODE_RATE)
     
-    TS_LENGTH = float(rospy.get_param("~ts_length", default = 150)) # [s]
+    ts_length_param = rospy.get_param("~ts_length")
+    TS_LENGTH = float(ts_length_param) if ts_length_param else None
     DATA_DIR = str(rospy.get_param("~data_dir"))
     DT = float(rospy.get_param("~dt", default = 0.1))
     SUBSAMPLING = bool(rospy.get_param("~subsampling", default = False))
@@ -140,12 +150,18 @@ if __name__ == '__main__':
     PP_SCRIPT = str(rospy.get_param("~pp_script"))
     OBS_SIZE = str(rospy.get_param("~obs_size"))
     SAFE_DIST = str(rospy.get_param("~safe_dist"))
+    SEL_AGENT = str(rospy.get_param("~sel_agent"))
+
     
     # Create data pool directory
     os.makedirs(DATA_DIR, exist_ok=True)
     if PP_SCRIPT != "": os.makedirs(PP_DATA_DIR, exist_ok=True)
     
     dc = DataCollector()
+    
+    def cleanup():
+        rospy.logerr("NODE STOPPED")
+        dc.save_csv()
 
     while not rospy.is_shutdown():
         rate.sleep()
