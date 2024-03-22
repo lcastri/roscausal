@@ -11,6 +11,7 @@
   <arg name="obs_size" default="2.0"/>
   <arg name="safe_dist" default="5.0"/>
   <arg name="sel_agent" default="1000"/>
+  <arg name="delete_traj" default="False"/>
 
   <node name="roscausal_data" pkg="roscausal_data" type="collecting_data.py" output="screen">
     <param name="data_dir"   value="$(arg data_dir)"/> 
@@ -25,6 +26,7 @@
     <param name="obs_size" value = "$(arg obs_size)"/>
     <param name="safe_dist" value = "$(arg safe_dist)"/>
     <param name="sel_agent" value = "$(arg sel_agent)"/>
+    <param name="delete_traj" value = "$(arg delete_traj)"/>
   </node>
  
 </launch>

@@ -157,19 +157,15 @@ if __name__ == '__main__':
     RG = Agent("RG", data["r_{gx}"], data["r_{gy}"])
     HG = Agent("HG", data["h_" + SEL_ID + "_{gx}"], data["h_" + SEL_ID + "_{gy}"])
             
-    df = pd.DataFrame(columns=["h_v", r"h_{\theta}", r"h_{\theta_{g}}", "h_{d_g}", "h_{risk}", r"h_{\omega}", r"h_{d_{obs}}"])  
+    df = pd.DataFrame(columns=["v", "d_g", "r"])  
     
     I0 = 1
-    for i in range(I0, len(data)):
-                
-        df.loc[i] = {"h_v" : H.v[i],
-                     r"h_{\theta}" : H.theta[i], 
-                     r"h_{\theta_{g}}" : H.heading(i, HG), 
-                     "h_{d_g}" : H.dist(i, HG), 
-                     "h_{risk}" : H.risk(i-1, R), 
-                     r"h_{\omega}" : H.omega[i],
-                     r"h_{d_{obs}}" : H.dist(i, R),
-                     }
+    for i in range(I0, len(data)-1):
+        df.loc[i] = {
+                    "v" : H.v[i],
+                    "d_g" : H.dist(i, HG),
+                    "r" : H.risk(i, R), 
+                    }
 
     # Save the processed data to another CSV file
     df = df[I0:-1]

@@ -49,7 +49,6 @@ class DataCollector():
             if SUBSAMPLING: self.raw = self.subsampling(self.raw, DT)
             timestamp_str = datetime.now().strftime(ID_FORMAT)
             csv_name = CSV_PREFIX + timestamp_str + '.csv'
-                
 
             self.raw.interpolate(method='linear', axis=0, inplace=True)
             self.raw.bfill(axis=0, inplace=True)
@@ -64,7 +63,8 @@ class DataCollector():
                                                                             "--pp_data_dir", PP_DATA_DIR,
                                                                             "--obs_size", OBS_SIZE,
                                                                             "--safe_dist", SAFE_DIST,
-                                                                            "--sel_agent", SEL_AGENT])
+                                                                            "--sel_agent", SEL_AGENT,
+                                                                            "--delete_traj", DEL_TRAJ])
                     
 
     def cb_handle_data(self, robot: RobotState, people: Humans):
@@ -145,11 +145,10 @@ if __name__ == '__main__':
     rospy.init_node(NODE_NAME, anonymous=True)
     rate = rospy.Rate(NODE_RATE)
     
-    ts_length_param = rospy.get_param("~ts_length")
-    TS_LENGTH = float(ts_length_param) if ts_length_param else None
+    TS_LENGTH = float(rospy.get_param("~ts_length")) if str(rospy.get_param("~ts_length")) != "" else None
     DATA_DIR = str(rospy.get_param("~data_dir"))
     DT = float(rospy.get_param("~dt", default = 0.1))
-    SUBSAMPLING = bool(rospy.get_param("~subsampling", default = False))
+    SUBSAMPLING = True if str(rospy.get_param("~subsampling")) == 'True' or str(rospy.get_param("~subsampling")) == 'true' else False
     ID_FORMAT = str(rospy.get_param("~id_format", default = '%Y%m%d_%H%M%S'))
     CSV_PREFIX = str(rospy.get_param("~csv_prefix", default = 'data_'))
     PP_DATA_DIR = str(rospy.get_param("~pp_data_dir"))
@@ -158,6 +157,7 @@ if __name__ == '__main__':
     OBS_SIZE = str(rospy.get_param("~obs_size"))
     SAFE_DIST = str(rospy.get_param("~safe_dist"))
     SEL_AGENT = str(rospy.get_param("~sel_agent"))
+    DEL_TRAJ = str(rospy.get_param("~delete_traj"))
     
     # Create data pool directory
     os.makedirs(DATA_DIR, exist_ok=True)
@@ -166,11 +166,6 @@ if __name__ == '__main__':
     dc = DataCollector()
     
     def cleanup():
-        rospy.logerr("NODE STOPPED")
-        dc.save_csv()
-
-    def cleanup():
-        rospy.logerr("NODE STOPPED")
         dc.save_csv()
 
     rospy.on_shutdown(cleanup)
