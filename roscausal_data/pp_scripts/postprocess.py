@@ -141,6 +141,7 @@ if __name__ == '__main__':
     parser.add_argument("--pp_data_dir", help="postprocess data dir")
     parser.add_argument("--obs_size", help="Obstacle increase size (radius) for risk calculation")
     parser.add_argument("--safe_dist", help="Safety distance for risk calculation")
+    parser.add_argument("--sel_agent", help="Selected agent")
     args = parser.parse_args()
 
     CSV = args.csv

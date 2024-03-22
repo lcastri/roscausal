@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
 import rospy
-from roscausal_msgs.msg import HumanState
-from pedsim_msgs.msg import TrackedPersons
+from roscausal_msgs.msg import HumanState, Humans
+from pedsim_msgs.msg import TrackedPersons, AgentStates
 import tf
 from std_msgs.msg import Header
-from geometry_msgs.msg import Pose2D, Twist, PoseWithCovariance
+from geometry_msgs.msg import Pose2D, Twist, PoseWithCovariance, Pose
 from shapely.geometry import *
 
 
@@ -13,25 +13,39 @@ NODE_NAME = "roscausal_human"
 NODE_RATE = 10 # [Hz]
 
 
-def get_2DPose(p: PoseWithCovariance):
+def get_2DPose(p):
     """
     Extracts x, y and theta from pose
     
     Args:
-        p (PoseWithCovarianceStamped): pose
+        p (Pose or PoseWithCovariance): pose
     
     Returns:
         tuple: x, y, theta
     """
-    x = p.pose.position.x
-    y = p.pose.position.y
-    
-    q = (
-        p.pose.orientation.x,
-        p.pose.orientation.y,
-        p.pose.orientation.z,
-        p.pose.orientation.w
-    )
+    if isinstance(p, PoseWithCovariance):
+        x = p.pose.position.x
+        y = p.pose.position.y
+
+        q = (
+            p.pose.orientation.x,
+            p.pose.orientation.y,
+            p.pose.orientation.z,
+            p.pose.orientation.w
+        )
+    elif isinstance(p, Pose):
+        x = p.position.x
+        y = p.position.y
+
+        q = (
+            p.orientation.x,
+            p.orientation.y,
+            p.orientation.z,
+            p.orientation.w
+        )
+    else:
+        raise ValueError("Unsupported pose type. Expected Pose or PoseWithCovariance.")
+
     m = tf.transformations.quaternion_matrix(q)
     _, _, yaw = tf.transformations.euler_from_matrix(m)
     return Pose2D(x, y, yaw)
@@ -43,52 +57,51 @@ class HumanStateClass():
         """
         HumanState constructor
         """
-        self.x = None
-        self.y = None
-        self.theta = None
-        self.v = None
-        self.w = None
         
-        self.robot = None
+        self.teleop_humans = list()
+        self.auto_humans = list()
+                
+        # Human publisher     
+        self.pub_human_state = rospy.Publisher('/roscausal/human', Humans, queue_size=10)
         
-        # Risk publisher     
-        self.pub_human_state = rospy.Publisher('/roscausal/human', HumanState, queue_size=10)
+        # Teleop agent subscriber
+        if TELEOP_PEOPLE_TOPIC is not None:
+            rospy.Subscriber(TELEOP_PEOPLE_TOPIC, TrackedPersons, self.get_teleop_data)
         
-        # TrackedPersons subscriber
-        rospy.Subscriber("/ped/control/teleop_persons", TrackedPersons, self.get_data)
+        # Autonomous agents subscriber
+        if AUTO_PEOPLE_TOPIC is not None:
+            rospy.Subscriber(AUTO_PEOPLE_TOPIC, AgentStates, self.get_auto_data)
         
         
-    def get_data(self, people: TrackedPersons):
+    def get_teleop_data(self, people: TrackedPersons):
         """
-        Synchronized callback
+        Teleop people callback
 
         Args:
             people (TrackedPersons): people
         """
-        pg = rospy.get_param(GOAL_PARAM, None)
+        self.teleop_humans = list()
+        
+        pg = rospy.get_param(GOAL_PARAM, None) if GOAL_PARAM is not None else None
         
         person = people.tracks[0]
         state = get_2DPose(person.pose)
-        self.x = state.x
-        self.y = state.y
-        self.theta = state.theta
-        self.v = person.twist.twist.linear
-        self.w = person.twist.twist.angular    
     
         # msg
         msg = HumanState()
         msg.header = Header()
         msg.header.stamp = rospy.Time.now()
         msg.header.frame_id = TARGET_FRAME
-        msg.pose2D = Pose2D(self.x, self.y, self.theta)
+        msg.id = int(person.track_id)
+        msg.pose2D = Pose2D(state.x, state.y, state.theta)
         
         twist = Twist()
-        twist.linear.x = self.v.x
-        twist.linear.y = self.v.y
-        twist.linear.z = self.v.z
-        twist.angular.x = self.w.x
-        twist.angular.y = self.w.y
-        twist.angular.z = self.w.z        
+        twist.linear.x = person.twist.twist.linear.x
+        twist.linear.y = person.twist.twist.linear.y
+        twist.linear.z = person.twist.twist.linear.z
+        twist.angular.x = person.twist.twist.angular.x
+        twist.angular.y = person.twist.twist.angular.y
+        twist.angular.z = person.twist.twist.angular.z        
         msg.twist = twist
         
         if pg is not None:
@@ -96,8 +109,42 @@ class HumanStateClass():
         else:
             msg.goal = Point(msg.pose2D.x, msg.pose2D.y, 0)
         
-        self.pub_human_state.publish(msg)               
+        self.teleop_humans.append(msg)
         
+        
+    def get_auto_data(self, people: AgentStates):
+        """
+        Autonomous people callback
+
+        Args:
+            people (TrackedPersons): people
+        """
+        self.auto_humans = list()
+        
+        for person in people.agent_states:
+            state = get_2DPose(person.pose)
+        
+            # msg
+            msg = HumanState()
+            msg.header = Header()
+            msg.header.stamp = rospy.Time.now()
+            msg.header.frame_id = TARGET_FRAME
+            msg.id = int(person.id)
+            msg.pose2D = Pose2D(state.x, state.y, state.theta)
+            
+            twist = Twist()
+            twist.linear.x = person.twist.linear.x
+            twist.linear.y = person.twist.linear.y
+            twist.linear.z = person.twist.linear.z
+            twist.angular.x = person.twist.angular.x
+            twist.angular.y = person.twist.angular.y
+            twist.angular.z = person.twist.angular.z        
+            msg.twist = twist
+            
+            msg.goal = person.goal
+            
+            self.auto_humans.append(msg)
+                
 
 if __name__ == '__main__':
     
@@ -105,12 +152,27 @@ if __name__ == '__main__':
     rospy.init_node(NODE_NAME, anonymous=True)
     rate = rospy.Rate(NODE_RATE)
     
-    PEOPLE_TOPIC = rospy.get_param("~people_topic", "/ped/control/teleop_persons")
-    GOAL_PARAM = rospy.get_param("~goal_param", "/hri/human_goal")
+    AUTO_PEOPLE_TOPIC = rospy.get_param("~auto_people_topic", "")
+    AUTO_PEOPLE_TOPIC = None if AUTO_PEOPLE_TOPIC == "" else AUTO_PEOPLE_TOPIC
+    
+    TELEOP_PEOPLE_TOPIC = rospy.get_param("~teleop_people_topic", "")
+    TELEOP_PEOPLE_TOPIC = None if TELEOP_PEOPLE_TOPIC == "" else TELEOP_PEOPLE_TOPIC
+    
+    GOAL_PARAM = rospy.get_param("~goal_param", "")
+    GOAL_PARAM = None if GOAL_PARAM == "" else GOAL_PARAM
+    
     SOURCE_FRAME = rospy.get_param("~source_frame")
     TARGET_FRAME = rospy.get_param("~target_frame", "map")
     
-    r = HumanStateClass()
+    H = HumanStateClass()
 
     while not rospy.is_shutdown():
+        humans = Humans()
+        humans.header = Header()
+        humans.header.stamp = rospy.Time.now()
+        humans.humans = H.teleop_humans + H.auto_humans
+        H.pub_human_state.publish(humans)
+        H.teleop_humans = list()
+        H.auto_humans = list()
+        
         rate.sleep()

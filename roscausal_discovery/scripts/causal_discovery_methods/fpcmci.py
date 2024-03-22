@@ -3,7 +3,7 @@ from fpcmci.CPrinter import CPLevel
 from fpcmci.FPCMCI import FPCMCI
 from fpcmci.preprocessing.data import Data
 from fpcmci.selection_methods.TE import TE, TEestimator
-from fpcmci.basics.constants import LabelType
+from fpcmci.basics.constants import LabelType, ImageExt
 
 
 def run(csvpath, csvname, alpha, minlag, maxlag, resdir):
@@ -35,4 +35,4 @@ def run(csvpath, csvname, alpha, minlag, maxlag, resdir):
         pval = cm.get_pval_matrix()
     
 
-    return feature, cs, val, pval
+    return feature, cs, val, pval, cdm.dag_path + ImageExt.PNG.value, cdm.ts_dag_path + ImageExt.PNG.value

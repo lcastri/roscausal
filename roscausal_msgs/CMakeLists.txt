@@ -52,6 +52,7 @@ add_message_files(
   FILES
   CausalModel.msg
   HumanState.msg
+  Humans.msg
   RobotState.msg
 )
 
