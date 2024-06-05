@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- Meta tags for social media banners, these should be filled in appropriatly as they are your "business card" -->
+  <!-- Replace the content tag with appropriate information -->
+  <meta name="description" content="DESCRIPTION META TAG">
+  <meta property="og:title" content="SOCIAL MEDIA TITLE TAG"/>
+  <meta property="og:description" content="SOCIAL MEDIA DESCRIPTION TAG TAG"/>
+  <meta property="og:url" content="URL OF THE WEBSITE"/>
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X630-->
+  <meta property="og:image" content="static/image/your_banner_image.png" />
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+
+
+  <meta name="twitter:title" content="TWITTER BANNER TITLE META TAG">
+  <meta name="twitter:description" content="TWITTER BANNER DESCRIPTION META TAG">
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X600-->
+  <meta name="twitter:image" content="static/images/your_twitter_banner_image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Keywords for your paper to be indexed by-->
+  <meta name="keywords" content="causal robotics, causal discovery, causal reasoning, ROS, human-robot interaction">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <title>ROS-Causal</title>
+  <link rel="icon" type="image/x-icon" href="static/images/roscausal.ico">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+  rel="stylesheet">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+</head>
+<body>
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <img src="static/images/roscausal.png" alt="ROS-Causal" style="margin-right: 10px; width: auto; height: 100pt;">
+            <h1 class="title is-1 publication-title">ROS-Causal</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section class="hero is-mytitle">
+  <div class="column has-text-centered">
+    <h2 class="title is-3 publication-title">
+      ROS-Causal: A ROS-based Causal Analysis Framework for Human-Robot Interaction Applications
+    </h2>
+  </div>
+</section>
+<section class="hero">
+  <div class="column has-text-centered">
+    <!-- <h2 class="title is-3 publication-title">
+      ROS-Causal: A ROS-based Causal Analysis Framework for Human-Robot Interaction Applications
+    </h2> -->
+    <div class="is-size-5 publication-authors">
+      <!-- Paper authors -->
+      <span class="author-block">
+        <a href="https://lcastri.github.io/" target="_blank">Luca Castri</a><sup>1</sup>,
+      </span>
+      <span class="author-block">
+        <a href="https://www.istc.cnr.it/en/people/gloria-beraldo" target="_blank">Gloria Beraldo</a><sup>2,3</sup>,
+      </span>
+      <span class="author-block">
+        <a href="https://sariahmghames.wixsite.com/portfolio" target="_blank">Sariah Mghames</a><sup>1</sup>,
+      </span>
+      <span class="author-block">
+        <a href="https://www.hanheide.net/" target="_blank">Marc Hanheide</a><sup>1</sup>,
+      </span>
+      <span class="author-block">
+        <a href="https://iaslab.dei.unipd.it/people/nbellotto/about/" target="_blank">Nicola Bellotto</a><sup>2,1</sup>
+      </span>
+    </div>
+
+    <div class="is-size-5 publication-authors">
+      <!-- <span class="author-block">Institution Name<br>Conferance name and year</span> -->
+      <!-- <span class="eql-cntrb"><small><br><sup>*</sup>Indicates Equal Contribution</small></span> -->
+      <sup>1</sup>University of Lincoln, UK, 
+      <sup>2</sup>University of Padua, Italy, 
+      <sup>3</sup>National Research Council of Italy<br>
+      Causal-HRI: Causal Learning for Human-Robot Interaction" workshop at the 2024 ACM/IEEE International Conference on Human-Robot Interaction (HRI)
+    </div>
+    <div class="column has-text-centered">
+      <div class="publication-links">
+        <!-- CausalHRI ArXiv abstract Link -->
+        <span class="link-block">
+          <a href="https://arxiv.org/abs/2402.16068" target="_blank" class="external-link button is-normal is-rounded is-dark">
+            <span class="icon">
+              <i class="ai ai-arxiv"></i>
+            </span>
+            <span>arXiv</span>
+          </a>
+        </span>
+        <!-- CausalHRI PDF link -->
+        <span class="link-block">
+          <a href="https://arxiv.org/pdf/2402.16068.pdf" target="_blank" class="external-link button is-normal is-rounded is-dark">
+            <span class="icon">
+              <i class="fas fa-file-pdf"></i>
+            </span>
+            <span>Paper</span>
+          </a>
+        </span>
+        <!-- CausalHRI ROS-Causal Github link -->
+        <span class="link-block">
+          <a href="https://github.com/lcastri/roscausal" target="_blank" class="external-link button is-normal is-rounded is-dark">
+            <span class="icon">
+              <i class="fab fa-github"></i>
+            </span>
+            <span>ROS-Causal</span>
+          </a>
+        </span>
+        <!-- CausalHRI ROS-Causal_HRISim Github link -->
+        <span class="link-block">
+          <a href="https://github.com/lcastri/ROS-Causal_HRISim" target="_blank" class="external-link button is-normal is-rounded is-dark">
+            <span class="icon">
+              <i class="fab fa-github"></i>
+            </span>
+            <span>ROS-Causal_HRISim</span>
+          </a>
+        </span>
+      </div>
+    </div>            
+  </div>
+</section>
+
+<!-- Paper abstract -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Deploying robots in human-shared spaces requires understanding interactions among nearby agents and objects. 
+            Modelling cause-and-effect relations through causal inference aids in predicting human behaviours and anticipating robot interventions. 
+            However, a critical challenge arises as existing causal discovery methods currently lack an implementation inside the ROS ecosystem, the standard de facto in robotics, hindering effective utilisation in robotics. 
+            To address this gap, this paper introduces ROS-Causal, a ROS-based framework for onboard data collection and causal discovery in human-robot spatial interactions. 
+            An ad-hoc simulator, integrated with ROS, illustrates the approach's effectiveness, showcasing the robot onboard generation of causal models during data collection.</p>
+          </div>
+        </div>
+      </div>
+  </div>
+</section>
+<!-- End paper abstract -->
+
+<section class="section hero is-small">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column">
+          <h2 class="title is-3">What is ROS-Causal?</h2>
+          <div class="content has-text-justified">
+            <p>
+              ROS-Causal is a ROS-Based Causal Analysis Framework that facilitates robot onboard data collection and causal 
+              discovery in human-robot spatial interactions. It is composed by four main ROS nodes:
+              <ul>
+                <li>
+                  <code>roscausal_robot</code>: collects data from several rostopics related to the robot 
+                  (e.g., position, velocity, target position, etc.), and merge them into a single rostopic <code>roscausal/robot</code>
+                </li>
+                <li>
+                  <code>roscausal_human</code>: collects data from several rostopics related to the human 
+                  (e.g., position, velocity, target position, etc.), and merge them into a single rostopic <code>roscausal/human</code>
+                </li>
+                <li>
+                  <code>roscausal_data</code>: subscribes to the topics <code>/roscausal/robot</code> and <code>/roscausal/human</code> 
+                  and begins collecting data in a CSV file. Once the desired time-series length (rosparam) is reached, the node provides the 
+                  option to post-process the data and finally saves the CSV file into a designated folder
+                </li>
+                <li>
+                  <code>roscausal_discovery</code>: performs causal discovery analysis on the collected data and publishes the result on 
+                  the <code>roscausal/causal_model</code> rostopic. 
+                  So far, it incorporates two causal discovery methods: <a href="https://github.com/jakobrunge/tigramite">PCMCI</a> and <a href="https://github.com/lcastri/fpcmci">F-PCMCI</a>.
+                </li>
+              </ul>
+              It is important to highlight that <code>roscausal_data</code> and <code>roscausal_discovery</code> ROS nodes operate asynchronously, 
+              allowing the simultaneous execution of causal analysis on one dataset while continuing the collection of another.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>  
+</section>
+<!-- Teaser video-->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video poster="" id="tree" autoplay controls muted loop height="100%">
+        <!-- Your video here -->
+        <source src="static/videos/video_teaser.mp4"
+        type="video/mp4">
+      </video>
+      <h2 class="subtitle has-text-centered">
+        <b>ROS-Causal</b> simultaneously collects data from an HRI scenario and conducts causal discovery analysis on board of the robot.
+      </h2>
+    </div>
+  </div>
+</section>
+<!-- End teaser video -->
+<section class="section hero is-small">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column">
+          <div class="content has-text-justified">
+            <p>
+              In this <a href="https://arxiv.org/abs/2402.16068">paper</a>, 
+              we provide a detailed technical explanation of ROS-Causal, 
+              accompanied by an experimental evaluation in a simulated environment: <a href="https://github.com/lcastri/ROS-Causal_HRISim">ROS-Causal_HRISim</a>.
+              <br>
+              <br>
+              
+              ROS-Causal_HRISim is a Gazebo-based human-robot interaction simulator that accurately replicates HRI scenarios 
+              involving a TIAGo robot and multiple pedestrians. The pedestrians are controlled either by social forces or user 
+              teleoperation (via keyboard). The simulator has been designed to facilitate the setup of real-life HRI scenarios 
+              and the execution of causal analysis within them. For the latter, ROS-Causal has been integrated into the ROS-Causal_HRISim simulator.
+            </p>
+            <div>
+              <img src="static/gifs/roscausal_hrisim_singleagent.gif" alt="Single-agent scenario" style="width: 33%;">
+              <img src="static/gifs/roscausal_hrisim_multiagent.gif" alt="Multi-agent scenario" style="width: 33%;">
+              <img src="static/gifs/roscausal_hrisim_corridor.gif" alt="Corridor scenario" style="width: 33%;">
+            </div>
+            
+            <br>
+            <p>
+              To evaluate ROS-Causal, we designed an HRI scenario involving a TIAGo robot and a teleoperated individual, represented by 
+              the red manikin. The green dot indicates the target position for the person. For the causal analysis, we considered a predefined 
+              set of variables, comprising:
+              <ul> 
+                <li>
+                <b>v</b> - human velocity;
+                </li>
+                <li>
+                  <b>d<sub>g</sub></b> - distance between the human and his target position;
+                </li>
+                <li>
+                  <b>r</b> - risk of collision with the robot.
+                </li>
+              </ul>
+              In the designed scenario, the robot follows a predefined path, while the person, who is teleoperated, has a target position that is randomly
+              chosen within the map and changes once reached by the person. 
+              In particular, a new target position is randomly chosen for the person, who then starts moving toward the goal, gradually reducing 
+              her velocity as she approaches it. Upon reaching the goal, a new target position is randomly selected, and the process repeats. 
+              If, during her path to the goal, the person encounters the robot, she must avoid it by decreasing her velocity and/or adjusting her steering.
+              Therefore, the expected causal links in this scenario are as follows:
+              <ul> 
+                <li>
+                  <b>v</b> &#10230; <b>d<sub>g</sub></b>, <b>d<sub>g</sub></b> depends inversely on <b>v</b>
+                </li>
+                <li>  
+                  <b>d<sub>g</sub></b> &#10230; <b>v</b> &#10229; <b>r</b>, <b>v</b> is a direct function of the <b>d<sub>g</sub></b>, but it is also affected by the collision risk <b>r</b>
+                </li>
+                <li>
+                  <b>v</b> &#10230; <b>r</b> depends on the velocity
+                </li>
+              </ul>
+            </p>
+            By using ROS-Causal, we were able to retrieve the correct causal model.
+            <br>
+            <br>
+            <div>
+              <img src="static/gifs/roscausal_hrisim_singleagent.gif" alt="Single-agent scenario" style="width: 56%;">
+              <img src="static/images/exp_simulation.png" alt="Causal Model" style="width: 43%;">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>  
+</section>
+
+<!-- <section class="section hero is-light">
+  <div class="hero-body">
+  <div class="container is-max-desktop">
+  <div class="columns is-centered has-text-centered">
+  <div class="column">
+    <h2 class="title is-3">What is ROS-Causal_HRISim?</h2>
+    <div class="content has-text-justified">
+      <p>cio</p>
+    </div>
+  </div>
+  </div>
+  </div>
+  </div>  
+</section> -->
+
+
+<!-- Paper poster -->
+<section class="hero is-small is-light">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title">Presentation</h2>
+      <iframe  src="static/pdfs/causalhri2024_slide.pdf" width="100%" height="550"></iframe>
+      </div>
+    </div>
+  </section>
+<!--End paper poster -->
+
+
+<!--BibTex citation + info -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX and useful links</h2>
+      <h2 class="title is-5 publication-title">
+        ROS-Causal: A ROS-based Causal Analysis Framework for Human-Robot Interaction Applications
+      </h2>
+      <div class="column has-text-centered">
+        <div class="publication-links">
+          <!-- CausalHRI ArXiv abstract Link -->
+          <span class="link-block">
+            <a href="https://arxiv.org/abs/2402.16068" target="_blank" class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                <i class="ai ai-arxiv"></i>
+              </span>
+              <span>arXiv</span>
+            </a>
+          </span>
+          <!-- CausalHRI PDF link -->
+          <span class="link-block">
+            <a href="https://arxiv.org/pdf/2402.16068.pdf" target="_blank" class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                <i class="fas fa-file-pdf"></i>
+              </span>
+              <span>Paper</span>
+            </a>
+          </span>
+          <!-- CausalHRI ROS-Causal Github link -->
+          <span class="link-block">
+            <a href="https://github.com/lcastri/roscausal" target="_blank" class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                <i class="fab fa-github"></i>
+              </span>
+              <span>ROS-Causal</span>
+            </a>
+          </span>
+          <!-- CausalHRI ROS-Causal_HRISim Github link -->
+          <span class="link-block">
+            <a href="https://github.com/lcastri/ROS-Causal_HRISim" target="_blank" class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                <i class="fab fa-github"></i>
+              </span>
+              <span>ROS-Causal_HRISim</span>
+            </a>
+          </span>
+        </div>
+      </div>     
+      <pre><code>@inproceedings{castri2024ros,
+        title={ROS-Causal: A ROS-based Causal Analysis Framework for Human-Robot Interaction Applications},
+        author={Castri, Luca and Beraldo, Gloria and Mghames, Sariah and Hanheide, Marc and Bellotto, Nicola},
+        booktitle={Workshop on Causal Learning for Human-Robot Interaction (Causal-HRI), ACM/IEEE International Conference on Human-Robot Interaction (HRI)},
+        year={2024}
+      }
+      </code></pre>
+    </div>
+</section>
+<!--End BibTex citation -->
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<!-- Paper -->
+<section class="hero is-mytitle">
+  <div class="column has-text-centered">
+    <h2 class="title is-3 publication-title">
+      Experimental Evaluation of ROS-Causal in Real-World Human-Robot Spatial Interaction Scenarios
+    </h2>
+  </div>
+</section>
+<section class="hero">
+  <div class="column has-text-centered">
+    <!-- <h2 class="title is-3 publication-title">
+      Experimental Evaluation of ROS-Causal in Real-World Human-Robot Spatial Interaction Scenarios
+    </h2> -->
+    <div class="is-size-5 publication-authors">
+      <!-- Paper authors -->
+      <span class="author-block">
+        <a href="https://lcastri.github.io/" target="_blank">Luca Castri</a><sup>1</sup>,
+      </span>
+      <span class="author-block">
+        <a href="https://www.istc.cnr.it/en/people/gloria-beraldo" target="_blank">Gloria Beraldo</a><sup>2,3</sup>,
+      </span>
+      <span class="author-block">
+        <a href="https://sariahmghames.wixsite.com/portfolio" target="_blank">Sariah Mghames</a><sup>1</sup>,
+      </span>
+      <span class="author-block">
+        <a href="https://www.hanheide.net/" target="_blank">Marc Hanheide</a><sup>1</sup>,
+      </span>
+      <span class="author-block">
+        <a href="https://iaslab.dei.unipd.it/people/nbellotto/about/" target="_blank">Nicola Bellotto</a><sup>2,1</sup>
+      </span>
+    </div>
+    
+    <div class="is-size-5 publication-authors">
+      <!-- <span class="author-block">Institution Name<br>Conferance name and year</span> -->
+      <!-- <span class="eql-cntrb"><small><br><sup>*</sup>Indicates Equal Contribution</small></span> -->
+      <sup>1</sup>University of Lincoln, UK, 
+      <sup>2</sup>University of Padua, Italy, 
+      <sup>3</sup>National Research Council of Italy<br>
+      IEEE International Conference on Robot and Human Interactive Communication (RO-MAN)
+    </div>
+    <div class="column has-text-centered">
+      <div class="publication-links">
+        <!-- CausalHRI ArXiv abstract Link -->
+        <span class="link-block">
+          <!-- FIXME: -->
+          <a href="https://arxiv.org/abs/XXX" target="_blank" class="external-link button is-normal is-rounded is-dark">
+            <span class="icon">
+              <i class="ai ai-arxiv"></i>
+            </span>
+            <span>arXiv</span>
+          </a>
+        </span>
+        <!-- CausalHRI PDF link -->
+        <span class="link-block">
+          <!-- FIXME: -->
+          <a href="https://arxiv.org/pdf/XXX" target="_blank" class="external-link button is-normal is-rounded is-dark">
+            <span class="icon">
+              <i class="fas fa-file-pdf"></i>
+            </span>
+            <span>Paper</span>
+          </a>
+        </span>
+        <!-- Dataset Zenodo link -->
+        <span class="link-block">
+          <a href="https://zenodo.org/records/10844902" target="_blank" class="external-link button is-normal is-rounded is-dark">
+            <span class="icon">
+              <i class="ai ai-zenodo"></i>
+            </span>
+            <span>Dataset</span>
+          </a>
+        </span>
+        <!-- Dataset Github link -->
+        <span class="link-block">
+          <a href="https://github.com/lcastri/ROS-Causal" target="_blank" class="external-link button is-normal is-rounded is-dark">
+            <span class="icon">
+              <i class="fab fa-github"></i>
+            </span>
+            <span>Dataset utils</span>
+          </a>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Paper abstract -->
+<section class="section hero is-light">
+<div class="container is-max-desktop">
+  <div class="columns is-centered has-text-centered">
+    <div class="column is-four-fifths">
+      <h2 class="title is-3">Abstract</h2>
+      <div class="content has-text-justified">
+        <p>
+          Deploying robots in human-shared environments requires a deep understanding of how nearby agents and objects interact. Employing causal inference to
+          model cause-and-effect relationships facilitates the prediction of human behaviours and enables the anticipation of robot interventions. However, a 
+          significant challenge arises due to the absence of implementation of existing causal discovery methods within the ROS ecosystem, the standard de-facto 
+          framework in robotics, hindering effective utilisation on real robots. To bridge this gap, in our previous work we proposed ROS-Causal, a ROS-based 
+          framework designed for onboard data collection and causal discovery in human-robot spatial interactions. In this work, we present an experimental 
+          evaluation of ROS-Causal both in simulation and on a new dataset of real-world human-robot spatial interactions to assess its performance and effectiveness. 
+          Our analysis demonstrates the efficacy of this approach, showcasing how causal models can be extracted directly onboard by robots during data collection. 
+          The online causal models generated from the simulation are consistent with those from real-world experiments. These findings can help researchers to enhance 
+          the performance of robotic systems in shared environments, firstly by studying the causal relations between variables in simulation without real people, 
+          and then facilitating the actual robot deployment on real human environments.      
+          </p>  
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End paper abstract -->
+
+
+<section class="section hero is-small">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column">
+          <h2 class="title is-3">Real-World Experiments</h2>
+          <div class="content has-text-justified">
+            <p>
+              <!-- FIXME: -->
+              In this <a href="https://arxiv.org/abs/XXX">paper</a>, we extend the previous <a href="https://arxiv.org/abs/2402.16068">work</a> by 
+              adding an experimental evaluation of ROS-Causal by using HRSI data from a real-world scenario.
+              <br>
+              The experiment and data collection occurred in a laboratory room of the University of Lincoln (UK), measuring 5 x 8.2m. 
+              Fifteen participants (6 females), aged between 25 and 55 took part in the experiment. Seven of them were used to work with a robot. 
+              They were required to walk between four goal positions (<b>G<sub>1</sub></b>, <b>G<sub>2</sub></b>, <b>G<sub>3</sub></b>, <b>G<sub>4</sub></b>) 
+              and avoid the robot if a cross occurs. 
+              <br>
+              A predefined rectangular path was set for the TIAGo robot to navigate along the room and generate frequent interactions with the participants.
+              The robot was equipped by a 3D Velodyne VLP-16 LiDAR <b>(1)</b> to track the person taking part at the experiment.
+              
+              <div>
+                <img src="static/images/TIAGo.png" alt="TIAGo robot" style="width: 23%; height: auto;">
+                <!-- <img src="static/images/TIAGo.png" alt="TIAGo robot" style="width: auto; height: 370px;"> -->
+                <img src="static/images/exp_setup.png" alt="Experiment setup" style="width: 38.4%; height: auto;">
+                <!-- <img src="static/images/exp_setup.png" alt="Experiment setup" style="width: auto; height: 370px;"> -->
+                <img src="static/images/exp_map.png" alt="2D map" style="width: 37%; height: auto;">
+                <!-- <img src="static/images/exp_map.png" alt="2D map" style="width: auto; height: 380px;"> -->
+              </div>
+              
+              <!-- <div class="image-container">
+                <video poster="" id="tree" autoplay controls muted loop width="100%">
+                  <video poster="" id="tree" autoplay controls muted loop width="61.7%">
+                    <source src="static/videos/exp_video.mp4"
+                    type="video/mp4">
+                  </video>
+                  <img src="static/gifs/A1.gif" alt="A1 interaction" style="width: auto; height: 370px;">
+                </div> -->
+              <br>
+              The experimental procedure is inspired by the one previously presented in the simulation environment created by ROS-Causal_HRISim 
+              and can be described as follows. Each participant started from one of the four target positions. The next target position was randomly 
+              chosen by the participant, who then started moving towards it. Upon reaching the 
+              goal position, the participant stopped there and randomly chose the next goal, repeating the process for 5 minutes. In this experimental 
+              setting, the robot was considered by the participant as an obstacle to avoid while walking towards their target positions.
+              <br>
+              For each participant, a causal discovery analysis was conducted on the collected data and a causal model was retrieved. In the following an example
+              of causal model retrieved by using the data of the <b>A<sub>1</sub></b> participant. As the real-world HRSI was similar to the one created in simulation,
+              the two causal models shares the same structure. 
+              <br>
+              <br>
+              
+              <div>
+                <img src="static/gifs/roscausal_hrisim_singleagent_cropped.gif" alt="A1 interaction" style="width: 49%; height: auto;">
+                <!-- <img src="static/gifs/roscausal_hrisim_singleagent_cropped.gif" alt="A1 interaction" style="width: 49%; height: 265px;"> -->
+                <!-- <img src="static/gifs/A1.gif" alt="A1 interaction" style="width: auto; height: 370px;"> -->
+                <video poster="" id="tree" autoplay controls muted loop width="50.5%">
+                  <!-- <video poster="" id="tree" autoplay controls muted loop width="61.7%"> -->
+                    <!-- Your video here -->
+                    <source src="static/videos/exp_video.mp4"
+                    type="video/mp4">
+                  </video>
+                </div>
+                <table width="100%">
+                  <tr>
+                    <td align="centre" width="50%">
+                      <img src="static/images/exp_simulation.png" alt="Causal Model from ROS-Causal_HRISim" style="width: 100%; height: auto;">
+                    </td>
+                    <td align="centre" width="50%">
+                      <img src="static/images/exp_realworld.png" alt="Causal Model from Real-World Experiment" style="width: 100%; height: auto;">
+                    </td>
+                  </tr>
+                </table>
+                <br>
+            </p>
+          </div>
+
+          <br>
+          <br>
+          <h2 class="title is-3">ROS-Causal Evaluation</h2>
+          <div class="content has-text-justified">
+            <p>
+              The following figures present the execution time and data requirement analyses. 
+              In particular, (left) and (centre) depict the execution time and the Structural Hamming Distance (SHD) metrics
+              for various time horizon (time-series length). In this analysis, we execute the causal analysis using both <a href="https://github.com/jakobrunge/tigramite">PCMCI</a> 
+              and <a href="https://github.com/lcastri/fpcmci">F-PCMCI</a> causal discovery methods 
+              included in ROS-Causal, considering different percentages of the time-series length, ranging from <b>10%</b> up to <b>100%</b> of the full 
+              length, corresponding to an average of 5 minutes per participant. For each time-horizon, we measure the execution time needed for
+              the causal discovery analysis and the SHD of the reconstructed causal model.
+              <br>
+              <br>
+              On the other hand, (right) shows an analysis of the sampling frequency. Specifically, considering the full length time-series, 
+              we performed the causal discovery analysis for various sampling frequencies, ranging from <b>0.5Hz</b> to <b>10Hz</b> that is the original
+               sampling frequency.
+              <br>
+              <br>
+              These analyses helped us identify the sampling frequency and time-series length required to generate accurate causal models for this specific
+              HRSI scenario, while also evaluating the execution time for the causal analysis. More details and considerations can be found in the associated <a href="https://arxiv.org/abs/XXX">paper</a>. <!-- FIXME: -->
+              
+              <div>
+                <img src="static/images/exp_time.png" alt="Execution Time vs time horizon" style="width: 33%; height: auto;">
+                <img src="static/images/exp_shd_time.png" alt="SHD vs time horizon" style="width: 33%; height: auto;">
+                <img src="static/images/exp_shd_freq.png" alt="Corridor scenario vs sampling frequency" style="width: 33%; height: auto;">
+              </div>
+            </p>
+          </div>
+          
+          <br>
+          <br>
+          <h2 class="title is-3">Dataset</h2>
+          <h3 class="title is-4">Human-Robot Spatial Interaction Dataset for Causal Analysis from Mobile Platforms</h3>
+          <div class="column has-text-centered">
+            <span class="link-block">
+              <a href="https://zenodo.org/records/10844902" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                  <i class="ai ai-zenodo"></i>
+                </span>
+                <span>Dataset</span>
+              </a>
+            </span>
+            <!-- Dataset Github link -->
+            <span class="link-block">
+              <a href="https://github.com/lcastri/ROS-Causal" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                  <i class="fab fa-github"></i>
+                </span>
+                <span>Dataset utils</span>
+              </a>
+            </span>
+          </div>
+          <div class="content has-text-justified">
+            <p>
+              The dataset captures a Human-Robot Spatial Interaction (HRSI) scenario between a person and the TIAGo robot. 
+              It focuses specifically on human-goal and human-robot spatial interaction in an indoor environment, captured from 
+              the perspective of a 3D Velodyne VLP-16 LiDAR mounted on the TIAGo robot. It includes:
+              <ul>
+                <li>rosbags containing: Velodyne LiDAR point clound, robot and human state (position, orientation and velocities);</li>
+                <li>CSV files containing trajectories of the person and the robot generated by post-processing the rosbags;</li>
+                <li>the map of the environment extracted from the TIAGo robot.</li>
+              </ul>
+              <b>15 participants</b> took part in the experiment, with the dataset capturing <b>5 minutes of HRSI motion for each participant.</b>
+              
+              <br>
+              <br>
+              <b>Environment and participant information</b><br>
+              The experiment and data collection occurred in a laboratory room of the University of Lincoln (UK), measuring 5 x 8.2m. 
+              Fifteen participants (6 females), aged between 25 and 55 took part in the experiment. Seven of the participants were robotics researchers who regularly work with robots.
+              
+              <br>
+              <br>
+              <b>Experiment procedure</b><br>
+              <!-- FIXME: X TIME to be replaced-->
+              Participants' task was to navigate between four designated goal positions (<b>G<sub>1</sub></b>, <b>G<sub>2</sub></b>, <b>G<sub>3</sub></b>, <b>G<sub>4</sub></b>) while avoiding collisions with the robot when crossing paths. 
+              Specifically, they were instructed to begin from a goal position randomly chosen by themselves, select the next one randomly, walk toward it, and repeat this process until the robot stopped (i.e., after 5 minutes from the start). 
+              They were asked to pass through all the goal positions at least X TIME and avoid the robot when encountering it. No specific instructions were provided regarding how to reach the goal positions or avoid the robot.
+              <br>
+              <br>
+              A predefined rectangular path (i.e., in blue in Fig.~\ref{fig:exp_setup}b) was set for the TIAGo robot to navigate along the room and generate frequent interactions with the participants.
+              <br>
+              <br>
+              <div>
+                <img src="static/gifs/A1.gif" alt="A1 interaction" style="width: 19.6%; height: auto; ">
+                <img src="static/gifs/A2.gif" alt="A2 interaction" style="width: 19.6%; height: auto; ">
+                <img src="static/gifs/A3.gif" alt="A3 interaction" style="width: 19.6%; height: auto; ">
+                <img src="static/gifs/A4.gif" alt="A4 interaction" style="width: 19.6%; height: auto; ">
+                <img src="static/gifs/A5.gif" alt="A5 interaction" style="width: 19.6%; height: auto; ">
+              </div>
+              <div>
+                <img src="static/gifs/A6.gif" alt="A6 interaction" style="width: 19.6%; height: auto; ">
+                <img src="static/gifs/A7.gif" alt="A7 interaction" style="width: 19.6%; height: auto; ">
+                <img src="static/gifs/A8.gif" alt="A8 interaction" style="width: 19.6%; height: auto; ">
+                <img src="static/gifs/A9.gif" alt="A9 interaction" style="width: 19.6%; height: auto; ">
+                <img src="static/gifs/A10.gif" alt="A10 interaction" style="width: 19.6%; height: auto; ">
+              </div>
+              <div>
+                <img src="static/gifs/A11.gif" alt="A11 interaction" style="width: 19.6%; height: auto; ">
+                <img src="static/gifs/A12.gif" alt="A12 interaction" style="width: 19.6%; height: auto; ">
+                <img src="static/gifs/A13.gif" alt="A13 interaction" style="width: 19.6%; height: auto; ">
+                <img src="static/gifs/A14.gif" alt="A14 interaction" style="width: 19.6%; height: auto; ">
+                <img src="static/gifs/A15.gif" alt="A15 interaction" style="width: 19.6%; height: auto; ">
+              </div>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>  
+</section>
+
+<!-- Paper poster -->
+<!-- <section class="hero is-small is-light">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title">Presentation</h2>
+
+      <iframe  src="static/pdfs/causalhri2024_slide.pdf" width="100%" height="550">
+          </iframe>
+        
+      </div>
+    </div>
+  </section> -->
+<!--End paper poster -->
+
+
+<!--BibTex citation -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX and useful links</h2>
+      <h2 class="title is-5 publication-title">
+        Experimental Evaluation of ROS-Causal in Real-World Human-Robot Spatial Interaction Scenarios
+      </h2>
+      <div class="column has-text-centered">
+        <div class="publication-links">
+          <!-- CausalHRI ArXiv abstract Link -->
+          <span class="link-block">
+            <!-- FIXME: -->
+            <a href="https://arxiv.org/abs/XXX" target="_blank" class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                <i class="ai ai-arxiv"></i>
+              </span>
+              <span>arXiv</span>
+            </a>
+          </span>
+          <!-- CausalHRI PDF link -->
+          <span class="link-block">
+            <!-- FIXME: -->
+            <a href="https://arxiv.org/pdf/XXX" target="_blank" class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                <i class="fas fa-file-pdf"></i>
+              </span>
+              <span>Paper</span>
+            </a>
+          </span>
+          <!-- Dataset Zenodo link -->
+          <span class="link-block">
+            <a href="https://zenodo.org/records/10844902" target="_blank" class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                <i class="ai ai-zenodo"></i>
+              </span>
+              <span>Dataset</span>
+            </a>
+          </span>
+          <!-- Dataset Github link -->
+          <span class="link-block">
+            <a href="https://github.com/lcastri/ROS-Causal" target="_blank" class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                <i class="fab fa-github"></i>
+              </span>
+              <span>Dataset utils</span>
+            </a>
+          </span>
+        </div>
+      </div>
+      <pre><code>@inproceedings{castri2024exp,
+        title={Experimental Evaluation of ROS-Causal in Real-World Human-Robot Spatial Interaction Scenarios},
+        author={Castri, Luca and Beraldo, Gloria and Mghames, Sariah and Hanheide, Marc and Bellotto, Nicola},
+        booktitle={2024 33nd IEEE International Conference on Robot and Human Interactive Communication (RO-MAN)},
+        pages={},
+        year={2024},
+        organization={IEEE}
+      }
+      </code></pre>
+    </div>
+</section>
+<!--End BibTex citation -->
+
+
+  <footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+            You are free to borrow the of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Statcounter tracking code -->
+  
+<!-- You can add a tracker to track page visits by creating an account at statcounter.com -->
+
+    <!-- End of Statcounter Code -->
+
+  </body>
+  </html>
