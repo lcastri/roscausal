@@ -62,7 +62,7 @@ class HumanStateClass():
         self.auto_humans = list()
                 
         # Human publisher     
-        self.pub_human_state = rospy.Publisher('/roscausal/human', Humans, queue_size=10)
+        self.pub_human_state = rospy.Publisher('/roscausal/humans', Humans, queue_size=10)
         
         # Teleop agent subscriber
         if TELEOP_PEOPLE_TOPIC is not None:
