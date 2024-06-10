@@ -8,6 +8,7 @@
   <arg name="id_format" default="%Y%m%d_%H%M%S"/>
   <arg name="csv_prefix" default="data_"/>
 
+
   <node name="roscausal_discovery" pkg="roscausal_discovery" type="causal_discovery.py" output="screen">
     <param name="data_dir"   value="$(arg data_dir)"/> 
     <param name="res_dir"   value="$(arg res_dir)"/> 

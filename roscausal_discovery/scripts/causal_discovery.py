@@ -91,6 +91,8 @@ def get_file(file_extension='.csv'):
                
                 
 if __name__ == '__main__':
+    printed = False
+    
     # Node
     rospy.init_node(NODE_NAME, anonymous=True)
     rate = rospy.Rate(NODE_RATE)
@@ -112,9 +114,11 @@ if __name__ == '__main__':
     pub_dag = rospy.Publisher('/roscausal/dag', Image, queue_size=10)
     pub_tsdag = rospy.Publisher('/roscausal/tsdag', Image, queue_size=10)
     
-    rospy.logwarn("Waiting for a csv file...")
     while not rospy.is_shutdown():
-        
+        if not printed: 
+            printed = True
+            rospy.logwarn("Waiting for a csv file...")
+            
         csv, name = get_file()
         if csv is not None:
             rospy.logwarn("Causal analysis on: " + csv)
@@ -122,7 +126,7 @@ if __name__ == '__main__':
             dc = CausalDiscovery(csv, name)
             f, cs, val, pval, dagpath, tsdagpath = dc.run()
             
-            if len(f) > 0:
+            if f is not None and len(f) > 0:
                 
                 # Publish CausalModel
                 msg = CausalModel()
@@ -151,9 +155,13 @@ if __name__ == '__main__':
                 img = cv2.imread(tsdagpath)
                 img_msg = bridge.cv2_to_imgmsg(img, encoding="bgr8")
                 pub_tsdag.publish(img_msg)
-                
+            else:
+                rospy.logwarn("No features selected")
+            
             rospy.logwarn("Removing file: " + csv)
             os.chmod(csv, stat.S_IWUSR | stat.S_IRUSR | stat.S_IXUSR)
             os.remove(csv)
+            printed = False
+
                 
         rate.sleep()
