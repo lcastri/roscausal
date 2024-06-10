@@ -91,6 +91,8 @@ def get_file(file_extension='.csv'):
                
                 
 if __name__ == '__main__':
+    printed = False
+    
     # Node
     rospy.init_node(NODE_NAME, anonymous=True)
     rate = rospy.Rate(NODE_RATE)
@@ -103,8 +105,6 @@ if __name__ == '__main__':
     RES_DIR = str(rospy.get_param("~res_dir", default = '/root/shared/'))
     ID_FORMAT = str(rospy.get_param("~id_format", default = '%Y%m%d_%H%M%S'))
     CSV_PREFIX = str(rospy.get_param("~css_prefix", default = 'data_'))
-    DELETE_DATA = rospy.get_param("~delete_data", default = True)
-
     
     # Create res pool directory
     if RES_DIR != "": os.makedirs(RES_DIR, exist_ok=True)   
@@ -114,9 +114,11 @@ if __name__ == '__main__':
     pub_dag = rospy.Publisher('/roscausal/dag', Image, queue_size=10)
     pub_tsdag = rospy.Publisher('/roscausal/tsdag', Image, queue_size=10)
     
-    rospy.logwarn("Waiting for a csv file...")
     while not rospy.is_shutdown():
-        
+        if not printed: 
+            printed = True
+            rospy.logwarn("Waiting for a csv file...")
+            
         csv, name = get_file()
         if csv is not None:
             rospy.logwarn("Causal analysis on: " + csv)
@@ -155,10 +157,11 @@ if __name__ == '__main__':
                 pub_tsdag.publish(img_msg)
             else:
                 rospy.logwarn("No features selected")
-                
-            if DELETE_DATA:
-                rospy.logwarn("Removing file: " + csv)
-                os.chmod(csv, stat.S_IWUSR | stat.S_IRUSR | stat.S_IXUSR)
-                os.remove(csv)
+            
+            rospy.logwarn("Removing file: " + csv)
+            os.chmod(csv, stat.S_IWUSR | stat.S_IRUSR | stat.S_IXUSR)
+            os.remove(csv)
+            printed = False
+
                 
         rate.sleep()
