@@ -7,6 +7,8 @@
   <arg name="max_lag" default="1"/>
   <arg name="id_format" default="%Y%m%d_%H%M%S"/>
   <arg name="csv_prefix" default="data_"/>
+  <arg name="delete_data" default="true"/>
+
 
   <node name="roscausal_discovery" pkg="roscausal_discovery" type="causal_discovery.py" output="screen">
     <param name="data_dir"   value="$(arg data_dir)"/> 
@@ -17,6 +19,7 @@
     <param name="max_lag"   value="$(arg max_lag)"/>
     <param name="id_format"   value="$(arg id_format)"/>
     <param name="csv_prefix"   value="$(arg csv_prefix)"/>
+    <param name="delete_data" type="bool" value="$(arg delete_data)"/>
   </node>
   
 </launch>

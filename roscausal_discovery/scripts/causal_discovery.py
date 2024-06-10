@@ -103,6 +103,8 @@ if __name__ == '__main__':
     RES_DIR = str(rospy.get_param("~res_dir", default = '/root/shared/'))
     ID_FORMAT = str(rospy.get_param("~id_format", default = '%Y%m%d_%H%M%S'))
     CSV_PREFIX = str(rospy.get_param("~css_prefix", default = 'data_'))
+    DELETE_DATA = rospy.get_param("~delete_data", default = True)
+
     
     # Create res pool directory
     if RES_DIR != "": os.makedirs(RES_DIR, exist_ok=True)   
@@ -122,7 +124,7 @@ if __name__ == '__main__':
             dc = CausalDiscovery(csv, name)
             f, cs, val, pval, dagpath, tsdagpath = dc.run()
             
-            if len(f) > 0:
+            if f is not None and len(f) > 0:
                 
                 # Publish CausalModel
                 msg = CausalModel()
@@ -151,9 +153,12 @@ if __name__ == '__main__':
                 img = cv2.imread(tsdagpath)
                 img_msg = bridge.cv2_to_imgmsg(img, encoding="bgr8")
                 pub_tsdag.publish(img_msg)
+            else:
+                rospy.logwarn("No features selected")
                 
-            rospy.logwarn("Removing file: " + csv)
-            os.chmod(csv, stat.S_IWUSR | stat.S_IRUSR | stat.S_IXUSR)
-            os.remove(csv)
+            if DELETE_DATA:
+                rospy.logwarn("Removing file: " + csv)
+                os.chmod(csv, stat.S_IWUSR | stat.S_IRUSR | stat.S_IXUSR)
+                os.remove(csv)
                 
         rate.sleep()
