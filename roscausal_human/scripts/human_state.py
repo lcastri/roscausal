@@ -5,8 +5,7 @@ from roscausal_msgs.msg import HumanState, Humans
 from pedsim_msgs.msg import TrackedPersons, AgentStates
 import tf
 from std_msgs.msg import Header
-from geometry_msgs.msg import Pose2D, Twist, PoseWithCovariance, Pose
-from shapely.geometry import *
+from geometry_msgs.msg import Pose2D, Twist, PoseWithCovariance, Pose, Point
 
 
 NODE_NAME = "roscausal_human"
