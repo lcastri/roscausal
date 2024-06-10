@@ -88,4 +88,5 @@ If you found this useful for your work, please cite this papers:
 ## Recent changes
 | Version | Changes |
 | :---: | ----------- |
+| 1.1.0 | roscausal_human new topic: "/roscausal/humans"<br>roscausal_discovery new topics: "/roscausal/dag" and "/roscausal/tsdag" for RViz visualisation<br>improved robustness in roscausal_discovery|
 | 1.0.0 | package released|
