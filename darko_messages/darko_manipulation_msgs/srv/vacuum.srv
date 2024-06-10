@@ -1,0 +1,5 @@
+geometry_msgs/Pose grasp_pose #Vacuum pose coming from the grasping detector Shih-Min
+bool data
+---
+bool success
+string message

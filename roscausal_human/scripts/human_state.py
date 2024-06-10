@@ -2,11 +2,10 @@
 
 import rospy
 from roscausal_msgs.msg import HumanState, Humans
-from pedsim_msgs.msg import TrackedPersons, AgentStates
 import tf
 from std_msgs.msg import Header
-from geometry_msgs.msg import Pose2D, Twist, PoseWithCovariance, Pose
-from shapely.geometry import *
+from geometry_msgs.msg import Pose2D, Twist, PoseWithCovariance, Pose, Point
+from darko_messages.darko_perception_msgs.msg import Humans as darkoHumans, Human as darkoHuman
 
 
 NODE_NAME = "roscausal_human"
@@ -57,94 +56,60 @@ class HumanStateClass():
         """
         HumanState constructor
         """
-        
-        self.teleop_humans = list()
-        self.auto_humans = list()
-                
+                        
         # Human publisher     
         self.pub_human_state = rospy.Publisher('/roscausal/humans', Humans, queue_size=10)
         
-        # Teleop agent subscriber
-        if TELEOP_PEOPLE_TOPIC is not None:
-            rospy.Subscriber(TELEOP_PEOPLE_TOPIC, TrackedPersons, self.get_teleop_data)
-        
         # Autonomous agents subscriber
-        if AUTO_PEOPLE_TOPIC is not None:
-            rospy.Subscriber(AUTO_PEOPLE_TOPIC, AgentStates, self.get_auto_data)
+        if PEOPLE_TOPIC is not None:
+            rospy.Subscriber(PEOPLE_TOPIC, darkoHumans, self.get_auto_data)
+               
         
-        
-    def get_teleop_data(self, people: TrackedPersons):
-        """
-        Teleop people callback
-
-        Args:
-            people (TrackedPersons): people
-        """
-        self.teleop_humans = list()
-        
-        pg = rospy.get_param(GOAL_PARAM, None) if GOAL_PARAM is not None else None
-        
-        person = people.tracks[0]
-        state = get_2DPose(person.pose)
-    
-        # msg
-        msg = HumanState()
-        msg.header = Header()
-        msg.header.stamp = rospy.Time.now()
-        msg.header.frame_id = TARGET_FRAME
-        msg.id = int(person.track_id)
-        msg.pose2D = Pose2D(state.x, state.y, state.theta)
-        
-        twist = Twist()
-        twist.linear.x = person.twist.twist.linear.x
-        twist.linear.y = person.twist.twist.linear.y
-        twist.linear.z = person.twist.twist.linear.z
-        twist.angular.x = person.twist.twist.angular.x
-        twist.angular.y = person.twist.twist.angular.y
-        twist.angular.z = person.twist.twist.angular.z        
-        msg.twist = twist
-        
-        if pg is not None:
-            msg.goal = Point(pg[0], pg[1], 0)
-        else:
-            msg.goal = Point(msg.pose2D.x, msg.pose2D.y, 0)
-        
-        self.teleop_humans.append(msg)
-        
-        
-    def get_auto_data(self, people: AgentStates):
+    def get_auto_data(self, humans: darkoHumans):
         """
         Autonomous people callback
 
         Args:
-            people (TrackedPersons): people
+            people (TrackedPersons): humans
         """
-        self.auto_humans = list()
+        humans = Humans()
+        humans.header = Header()
+        humans.header.stamp = rospy.Time.now()
         
-        for person in people.agent_states:
-            state = get_2DPose(person.pose)
+        # FIXME: I might not have this info
+        pg = rospy.get_param(GOAL_PARAM, None) if GOAL_PARAM is not None else None
+        
+        for person in humans.humans:
+            state = get_2DPose(person.centroid)
         
             # msg
             msg = HumanState()
             msg.header = Header()
             msg.header.stamp = rospy.Time.now()
+            # FIXME: is the source frame map? If not, I need to transform it into the map frame
             msg.header.frame_id = TARGET_FRAME
             msg.id = int(person.id)
             msg.pose2D = Pose2D(state.x, state.y, state.theta)
             
             twist = Twist()
-            twist.linear.x = person.twist.linear.x
-            twist.linear.y = person.twist.linear.y
-            twist.linear.z = person.twist.linear.z
-            twist.angular.x = person.twist.angular.x
-            twist.angular.y = person.twist.angular.y
-            twist.angular.z = person.twist.angular.z        
+            twist.linear.x = person.velocity.twist.linear.x
+            twist.linear.y = person.velocity.twist.linear.y
+            twist.linear.z = person.velocity.twist.linear.z
+            twist.angular.x = person.velocity.twist.angular.x
+            twist.angular.y = person.velocity.twist.angular.y
+            twist.angular.z = person.velocity.twist.angular.z        
             msg.twist = twist
             
-            msg.goal = person.goal
+            # FIXME: I might not have this info
+            if pg is not None:
+                msg.goal = Point(pg[0], pg[1], 0)
+            else:
+                msg.goal = Point(msg.pose2D.x, msg.pose2D.y, 0)
             
-            self.auto_humans.append(msg)
-                
+            humans.humans.append(msg)
+            
+        H.pub_human_state.publish(humans)
+        
 
 if __name__ == '__main__':
     
@@ -152,11 +117,8 @@ if __name__ == '__main__':
     rospy.init_node(NODE_NAME, anonymous=True)
     rate = rospy.Rate(NODE_RATE)
     
-    AUTO_PEOPLE_TOPIC = rospy.get_param("~auto_people_topic", "")
-    AUTO_PEOPLE_TOPIC = None if AUTO_PEOPLE_TOPIC == "" else AUTO_PEOPLE_TOPIC
-    
-    TELEOP_PEOPLE_TOPIC = rospy.get_param("~teleop_people_topic", "")
-    TELEOP_PEOPLE_TOPIC = None if TELEOP_PEOPLE_TOPIC == "" else TELEOP_PEOPLE_TOPIC
+    PEOPLE_TOPIC = rospy.get_param("~people_topic", "")
+    PEOPLE_TOPIC = None if PEOPLE_TOPIC == "" else PEOPLE_TOPIC
     
     GOAL_PARAM = rospy.get_param("~goal_param", "")
     GOAL_PARAM = None if GOAL_PARAM == "" else GOAL_PARAM
@@ -166,13 +128,4 @@ if __name__ == '__main__':
     
     H = HumanStateClass()
 
-    while not rospy.is_shutdown():
-        humans = Humans()
-        humans.header = Header()
-        humans.header.stamp = rospy.Time.now()
-        humans.humans = H.teleop_humans + H.auto_humans
-        H.pub_human_state.publish(humans)
-        H.teleop_humans = list()
-        H.auto_humans = list()
-        
-        rate.sleep()
+    rospy.spin()
