@@ -5,7 +5,7 @@ from roscausal_msgs.msg import HumanState, Humans
 import tf
 from std_msgs.msg import Header
 from geometry_msgs.msg import Pose2D, Twist, PoseWithCovariance, Pose, Point
-from darko_messages.darko_perception_msgs.msg import Humans as darkoHumans, Human as darkoHuman
+from darko_messages.darko_perception_msgs.msg import Humans as darkoHumans
 
 
 NODE_NAME = "roscausal_human"
