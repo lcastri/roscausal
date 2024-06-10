@@ -27,7 +27,7 @@ class DataCollector():
         sub_robot = message_filters.Subscriber("/roscausal/robot", RobotState)
         
         # Person subscriber
-        sub_people = message_filters.Subscriber('/roscausal/human', Humans)
+        sub_people = message_filters.Subscriber('/roscausal/humans', Humans)
                         
         # Init synchronizer and assigning a callback 
         self.ats = message_filters.ApproximateTimeSynchronizer([sub_robot, 
@@ -41,6 +41,11 @@ class DataCollector():
     def save_csv(self):
         # Save currect dataframe
         if self.raw is not None:
+                        
+            # Convert columns to numeric if necessary
+            for col in self.raw.columns:
+                self.raw[col] = pd.to_numeric(self.raw[col], errors='ignore')          
+            
             # this is to make sure that the dataframe contains data with time in ascending order.
             # with ApproximateTimeSynchronizer might not be always true
             self.raw.sort_values(by = 'time', ascending = True, inplace = True, ignore_index = True)
