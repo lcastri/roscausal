@@ -2,10 +2,10 @@
   <arg name="data_dir" default = "$(find roscausal_data)/data_pool/"/>
   <arg name="pp_data_dir" default = "$(find roscausal_data)/pp_pool/"/>
   <arg name="pp_script_dir" default = "$(find roscausal_data)/pp_scripts/"/>
-  <arg name="pp_script" default = ""/>
-  <arg name="ts_length" default=""/> 
+  <arg name="pp_script" default = "postprocess.py"/>
+  <arg name="ts_length" default="120"/> 
   <arg name="dt" default="0.1"/> 
-  <arg name="subsampling" default="false"/> 
+  <arg name="subsampling" default="true"/> 
   <arg name="id_format" default="%Y%m%d_%H%M%S"/>
   <arg name="csv_prefix" default="data_"/>
   <arg name="obs_size" default="2.0"/>

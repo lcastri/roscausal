@@ -5,8 +5,6 @@ from fpcmci.preprocessing.data import Data
 from fpcmci.selection_methods.TE import TE, TEestimator
 from fpcmci.basics.constants import LabelType, ImageExt
 
-import rospy
-
 
 def run(csvpath, csvname, alpha, minlag, maxlag, resdir):
 

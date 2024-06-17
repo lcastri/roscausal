@@ -7,7 +7,7 @@ import rospy
 import pandas as pd
 import os
 import message_filters
-from roscausal_msgs.msg import HumanState, Humans, RobotState
+from roscausal_msgs.msg import Humans, RobotState
 
 
 
