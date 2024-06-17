@@ -1,3 +1,0 @@
-pandas>=1.5.2
-fpcmci>=4.4.1
-shapely>=2.0.4

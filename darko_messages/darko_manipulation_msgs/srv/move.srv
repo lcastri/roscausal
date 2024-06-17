@@ -1,9 +1,0 @@
-geometry_msgs/Pose move_pose
-bool data
-std_msgs/Float64 first_syn
-std_msgs/Float64 second_syn
-bool flag_close_hand
----
-bool success
-string message
-

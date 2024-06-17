@@ -1,8 +1,0 @@
-geometry_msgs/Pose grasp_pose # Grasping detector Shih-Min
-bool data
-string type_of_grasp # pinch or power grasp(for the SoftHand2)
-std_msgs/Float64 object_mass # the mass of the object that will be grasped (this is used inside the Static Gravity Compensation ROS Service Server)
----
-bool success
-string message
-
