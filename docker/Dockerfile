@@ -6,7 +6,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     locales lsb-release build-essential software-properties-common gnupg curl wget \
     apt-transport-https git tmux terminator nano htop net-tools iputils-ping sshpass \
     iproute2 python3-pip xserver-xorg-video-dummy x11-* xinit x11vnc xterm xvfb xauth \
-    xorg python3-catkin-tools ros-noetic-move-base-msgs \
+    xorg python3-catkin-tools ros-noetic-move-base-msgs ros-noetic-jsk-recognition-msgs \
     && rm -rf /var/lib/apt/lists/*
 
 # Create a symbolic link for python
