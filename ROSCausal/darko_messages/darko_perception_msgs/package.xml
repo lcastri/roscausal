@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>darko_perception_msgs</name>
+  <version>0.0.1</version>
+  <description>Perception-related message definitions of the EU H2020 project DARKO</description>
+
+  <maintainer email="info@darko-project.eu">DARKO project consortium</maintainer>
+
+  <author email="shih-min.yang@oru.se">Shih-Min Yang</author>
+  <author email="narunas.vaskevicius@de.bosch.com">Narunas Vaskevicius</author>
+  <author email="timm.linder@de.bosch.com">Timm Linder</author>
+  
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>message_generation</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+
+  <exec_depend>message_runtime</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+
+</package>

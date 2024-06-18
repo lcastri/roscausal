@@ -4,8 +4,9 @@ FROM osrf/ros:noetic-desktop-full
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \ 
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     locales lsb-release build-essential software-properties-common gnupg curl wget \
-    apt-transport-https git tmux terminator nano htop net-tools iputils-ping sshpass iproute2 python3-pip \
-    xserver-xorg-video-dummy x11-* xinit x11vnc xterm xvfb xauth xorg python3-catkin-tools \
+    apt-transport-https git tmux terminator nano htop net-tools iputils-ping sshpass \
+    iproute2 python3-pip xserver-xorg-video-dummy x11-* xinit x11vnc xterm xvfb xauth \
+    xorg python3-catkin-tools ros-noetic-move-base-msgs \
     && rm -rf /var/lib/apt/lists/*
 
 # Create a symbolic link for python
@@ -34,11 +35,6 @@ RUN cd ~/ros_ws/fpcmci && pip install . --use-pep517
 
 # Installing pkgs for postprocessing
 RUN DEBIAN_FRONTEND=noninteractive pip install shapely
-
-# Clone and install roscausal
-# RUN mkdir -p ~/ros_ws/src/ROSCausal/ && \ 
-#     cd ~/ros_ws/src/ROSCausal/ && \
-#     git clone -b darko-intweek2024 https://github.com/lcastri/roscausal.git
 
 # Copy the entrypoint.sh script into the image and give execute permissions to the script
 COPY docker/entrypoint.sh /usr/local/bin/
