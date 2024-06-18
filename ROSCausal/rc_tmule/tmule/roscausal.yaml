@@ -21,7 +21,7 @@ init_cmd: |
 
   # source the tiago catkin workspace
   source "$HOME/.bashrc"
-  export_default CATKIN_WS "$HOME/ros_ws
+  export_default CATKIN_WS "$HOME/ros_ws"
 
 
 windows:
