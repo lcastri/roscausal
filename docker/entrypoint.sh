@@ -15,8 +15,8 @@ echo " "
 
   echo "Container is now running."
   echo " "
-  echo "function rc-start(){  tmule -c ~/ros_ws/src/ROSCausal/roscausal_tmule/tmule/roscausal.yaml -W 3 launch ; }" >> ~/.bashrc
-  echo "function rc-stop(){  tmule -c ~/ros_ws/src/ROSCausal/roscausal_tmule/tmule/roscausal.yaml terminate ; }" >> ~/.bashrc
+  echo "function rc-start(){  tmule -c ~/ros_ws/src/ROSCausal/rc_tmule/tmule/roscausal.yaml -W 3 launch ; }" >> ~/.bashrc
+  echo "function rc-stop(){  tmule -c ~/ros_ws/src/ROSCausal/rc_tmule/tmule/roscausal.yaml terminate ; }" >> ~/.bashrc
   echo "function rc-show(){  tmux a -t roscausal ; }" >> ~/.bashrc
 
   source /opt/ros/noetic/setup.bash

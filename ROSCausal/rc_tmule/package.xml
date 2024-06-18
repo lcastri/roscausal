@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>roscausal_tmule</name>
+  <name>rc_tmule</name>
   <version>0.0.0</version>
-  <description>The roscausal_tmule package</description>
+  <description>The rc_tmule package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
