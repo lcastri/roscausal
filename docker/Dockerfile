@@ -36,9 +36,9 @@ RUN cd ~/ros_ws/fpcmci && pip install . --use-pep517
 RUN DEBIAN_FRONTEND=noninteractive pip install shapely
 
 # Clone and install roscausal
-RUN mkdir -p ~/ros_ws/src/ROSCausal/ && \ 
-    cd ~/ros_ws/src/ROSCausal/ && \
-    git clone -b darko-intweek2024 https://github.com/lcastri/roscausal.git
+# RUN mkdir -p ~/ros_ws/src/ROSCausal/ && \ 
+#     cd ~/ros_ws/src/ROSCausal/ && \
+#     git clone -b darko-intweek2024 https://github.com/lcastri/roscausal.git
 
 # Copy the entrypoint.sh script into the image and give execute permissions to the script
 COPY docker/entrypoint.sh /usr/local/bin/
