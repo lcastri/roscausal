@@ -1,0 +1,37 @@
+session: roscausal
+init_cmd: |
+  echo " "
+  echo " "
+  echo " "
+  echo "Running Initialisation" | awk '{ gsub("Running Initialisation", "\033[1;21m\033[1;30m&\033[0m"); print }' ;
+
+  #exec /bin/bash
+  cd @TMULE_CONFIG_DIR@ || true
+  set -o pipefail
+  function export_default () {
+    var_name="$1"
+    var_default="$2"
+    eval $var_name="${!var_name:-$var_default}"
+    export $var_name
+    echo "  $0 -> $var_name=${!var_name}"
+  }
+
+  # source ROS
+  source "/opt/ros/$(rosversion -d)/setup.bash"
+
+  # source the tiago catkin workspace
+  source "$HOME/.bashrc"
+  export_default CATKIN_WS "$HOME/ros_ws
+
+
+windows:
+  - name: interface
+    tags: ['roscausal']
+    panes:
+      - 'roslaunch roscausal_robot robot_state.launch'
+      - 'roslaunch roscausal_human human_state.launch'
+  - name: discovery
+    tags: ['roscausal']
+    panes:
+      - 'cd ~/ros_ws/src/HRISim/hrisim_causal_discovery; echo -e "\033[1;31mStart your data collector node\033[0m"'
+      - 'cd ~/ros_ws/src/HRISim/hrisim_causal_discovery; echo -e "\033[1;31mStart your causal discovery node\033[0m"'

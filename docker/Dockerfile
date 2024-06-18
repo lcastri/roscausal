@@ -33,7 +33,6 @@ RUN cd ~/ros_ws/fpcmci && pip install . --use-pep517
 RUN DEBIAN_FRONTEND=noninteractive pip install shapely
 
 # Clone and install roscausal
-RUN echo "CIAO"
 RUN mkdir -p ~/ros_ws/src/ && \ 
     cd ~/ros_ws/src/ && \
     git clone -b darko-intweek2024 https://github.com/lcastri/roscausal.git
@@ -44,6 +43,13 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Create a shared folder with the host machine
 RUN mkdir -p ~/shared
+
+RUN echo "export ROS_MASTER_URI=http://sxlsk-210727aa:11311" >> /root/.bashrc \
+    && echo "export ROS_HOSTNAME=Nuvo-8108GC-Series" >> /root/.bashrc
+
+# Copy all local software into the docker
+RUN mkdir -p ~/ros_ws/src/ROSCausal/
+COPY ROSCausal /root/ros_ws/src/ROSCausal
 
 # Set the entrypoint to run the script
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
