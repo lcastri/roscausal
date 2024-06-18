@@ -8,6 +8,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     xserver-xorg-video-dummy x11-* xinit x11vnc xterm xvfb xauth xorg python3-catkin-tools \
     && rm -rf /var/lib/apt/lists/*
 
+# Create a symbolic link for python
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
 # Create a new workspace
 RUN mkdir -p ~/ros_ws
 WORKDIR /root/ros_ws
