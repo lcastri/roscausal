@@ -9,8 +9,7 @@ from std_msgs.msg import String
 NODE_NAME = "publish_goal"
 NODE_RATE = 10 # [Hz]
 DIST_THRES = 0.5
-GOALS = [] # FIXME: update the goal list
-
+GOALS = [[-1.54, -3.62], [-0.38, -5.40], [0.5, -3.5]]
 
 class PublishGoalClass():
     

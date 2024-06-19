@@ -6,7 +6,6 @@ import tf
 from std_msgs.msg import Header
 from geometry_msgs.msg import Pose2D, Twist, PoseWithCovariance, TwistWithCovariance, Pose, Point
 from spencer_tracking_msgs.msg import TrackedPersons
-from shapely.geometry import Point, Polygon
 from tf2_ros import Buffer, TransformListener
 import tf2_geometry_msgs
 from std_msgs.msg import String
@@ -14,8 +13,6 @@ from std_msgs.msg import String
 
 NODE_NAME = "roscausal_human"
 NODE_RATE = 10 # [Hz]
-MAP_BOUNDARIES = [] # add points
-MAP_POLY = Polygon(MAP_BOUNDARIES)
 
 
 def get_2DPose(p):
