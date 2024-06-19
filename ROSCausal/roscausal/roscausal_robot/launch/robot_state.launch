@@ -1,9 +1,9 @@
 <launch>
   <arg name="odom_topic" default="/mobile_base_controller/odom"/>
-  <arg name="pose_topic" default="/robot_pose"/>
+  <arg name="pose_topic" default="/robot/mcl_pose_estimate"/>
   <arg name="goal_topic"  default="/move_base/goal"/>
-  <arg name="source_frame"  default="base_footprint"/>
-  <arg name="target_frame"  default="map"/>
+  <arg name="source_frame"  default="robot_map"/>
+  <arg name="target_frame"  default="robot_map"/>
 
   <node name="roscausal_robot" pkg="roscausal_robot" type="robot_state.py" output="screen">
     <param name="odom_topic" type="string" value="$(arg odom_topic)"/>

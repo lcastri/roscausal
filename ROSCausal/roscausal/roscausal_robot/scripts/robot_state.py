@@ -51,27 +51,24 @@ class RobotStateClass():
         
         # Risk publisher     
         self.pub_robot_state = rospy.Publisher('/roscausal/robot', RobotState, queue_size=10)
-        
-        # Odometry subscriber
-        sub_odom = message_filters.Subscriber(ODOM_TOPIC, Odometry)
-                        
+                                
         # Robot pose subscriber
-        sub_robot_pose = message_filters.Subscriber(POSE_TOPIC, PoseWithCovarianceStamped)
+        sub_robot_pose = rospy.Subscriber(POSE_TOPIC, PoseWithCovarianceStamped, self.get_data)
         
         # Robot Goal subscriber
         rospy.Subscriber(GOAL_TOPIC, MoveBaseActionGoal, self.cb_goal)
                 
         # Init synchronizer and assigning a callback 
-        self.ats = message_filters.ApproximateTimeSynchronizer([sub_odom,  
-                                                                sub_robot_pose], 
-                                                                queue_size = 10, slop = 0.1,
-                                                                allow_headerless = True)
+        # self.ats = message_filters.ApproximateTimeSynchronizer([sub_odom,  
+        #                                                         sub_robot_pose], 
+        #                                                         queue_size = 10, slop = 0.1,
+        #                                                         allow_headerless = True)
         
         if SOURCE_FRAME != TARGET_FRAME:
             self.tf_buffer = Buffer()
             self.tf_listener = TransformListener(self.tf_buffer)
 
-        self.ats.registerCallback(self.get_data)
+        # self.ats.registerCallback(self.get_data)
         
         
     def cb_goal(self, goal: MoveBaseActionGoal):
@@ -84,8 +81,7 @@ class RobotStateClass():
         self.rg = (goal.goal.target_pose.pose.position.x, goal.goal.target_pose.pose.position.y)
                        
 
-    def get_data(self, odom: Odometry,
-                       robot_pose: PoseWithCovarianceStamped):
+    def get_data(self, robot_pose: PoseWithCovarianceStamped):
         """
         Synchronized callback
 
@@ -97,16 +93,16 @@ class RobotStateClass():
             transform = self.tf_buffer.lookup_transform(TARGET_FRAME, SOURCE_FRAME, rospy.Time(), rospy.Duration(0.5))
             original_vector = Vector3Stamped()
             original_vector.header.frame_id = SOURCE_FRAME
-            original_vector.vector.x = odom.twist.twist.linear.x
-            original_vector.vector.y = odom.twist.twist.linear.y
-            original_vector.vector.z = odom.twist.twist.linear.z
+            original_vector.vector.x = robot_pose.twist.twist.linear.x
+            original_vector.vector.y = robot_pose.twist.twist.linear.y
+            original_vector.vector.z = robot_pose.twist.twist.linear.z
             r_v = do_transform_vector3(original_vector, transform)
             
             original_vector = Vector3Stamped()
             original_vector.header.frame_id = SOURCE_FRAME
-            original_vector.vector.x = odom.twist.twist.angular.x
-            original_vector.vector.y = odom.twist.twist.angular.y
-            original_vector.vector.z = odom.twist.twist.angular.z
+            original_vector.vector.x = robot_pose.twist.twist.angular.x
+            original_vector.vector.y = robot_pose.twist.twist.angular.y
+            original_vector.vector.z = robot_pose.twist.twist.angular.z
             r_w = do_transform_vector3(original_vector, transform)
         
             twist = Twist()
@@ -118,12 +114,12 @@ class RobotStateClass():
             twist.angular.z = r_w.vector.z
         else:
             twist = Twist()
-            twist.linear.x = odom.twist.twist.linear.x
-            twist.linear.y = odom.twist.twist.linear.y
-            twist.linear.z = odom.twist.twist.linear.z
-            twist.angular.x = odom.twist.twist.angular.x
-            twist.angular.y = odom.twist.twist.angular.y
-            twist.angular.z = odom.twist.twist.angular.z
+            twist.linear.x = robot_pose.twist.twist.linear.x
+            twist.linear.y = robot_pose.twist.twist.linear.y
+            twist.linear.z = robot_pose.twist.twist.linear.z
+            twist.angular.x = robot_pose.twist.twist.angular.x
+            twist.angular.y = robot_pose.twist.twist.angular.y
+            twist.angular.z = robot_pose.twist.twist.angular.z
         
                
         msg = RobotState()

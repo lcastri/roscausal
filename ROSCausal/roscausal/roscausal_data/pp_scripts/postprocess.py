@@ -164,7 +164,7 @@ if __name__ == '__main__':
         df.loc[i] = {
                     "v" : H.v[i],
                     "d_g" : H.dist(i, HG),
-                    "r" : H.risk(i, R), 
+                    "\theta_g" : H.heading(i, HG), 
                     }
 
     # Save the processed data to another CSV file
