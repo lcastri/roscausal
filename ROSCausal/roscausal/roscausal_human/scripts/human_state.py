@@ -114,7 +114,8 @@ class HumanStateClass():
             msg.header = Header()
             msg.header.stamp = rospy.Time.now()
             msg.header.frame_id = TARGET_FRAME
-            msg.id = int(person.track_id)
+            msg.id = 1000 # NOTE: this is to ensure that the tracked person has a specific ID 
+            # msg.id = int(person.track_id)
             msg.pose2D = Pose2D(state.x, state.y, state.theta)
             
             twist = Twist()
@@ -132,6 +133,9 @@ class HumanStateClass():
                 msg.goal = Point(msg.pose2D.x, msg.pose2D.y, 0)
             
             humans.humans.append(msg)
+            
+            
+            break # NOTE: this is to ensure that there is only one person in the scene 
             
         self.pub_human_state.publish(humans)
        
