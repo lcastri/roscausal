@@ -118,7 +118,6 @@ if __name__ == '__main__':
     ODOM_TOPIC = rospy.get_param("~odom_topic", "/mobile_base_controller/odom")
     POSE_TOPIC = rospy.get_param("~pose_topic", "/robot_pose")
     GOAL_TOPIC = rospy.get_param("~goal_topic", "/move_base/goal")
-    SOURCE_FRAME = rospy.get_param("~source_frame")
     TARGET_FRAME = rospy.get_param("~target_frame", "map")
     
     r = RobotStateClass()

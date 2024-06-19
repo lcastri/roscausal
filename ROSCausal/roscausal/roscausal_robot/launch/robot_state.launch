@@ -2,14 +2,12 @@
   <arg name="odom_topic" default="/mobile_base_controller/odom"/>
   <arg name="pose_topic" default="/robot/mcl_pose_estimate"/>
   <arg name="goal_topic"  default="/move_base/goal"/>
-  <arg name="source_frame"  default="robot_map"/>
   <arg name="target_frame"  default="robot_map"/>
 
   <node name="roscausal_robot" pkg="roscausal_robot" type="robot_state.py" output="screen">
     <param name="odom_topic" type="string" value="$(arg odom_topic)"/>
     <param name="pose_topic" type="string" value="$(arg pose_topic)"/>
     <param name="goal_topic" type="string" value="$(arg goal_topic)"/>
-    <param name="source_frame" type="string" value="$(arg source_frame)"/>
     <param name="target_frame" type="string" value="$(arg target_frame)"/>
   </node>
 </launch>
