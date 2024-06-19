@@ -29,7 +29,6 @@ class PublishGoalClass():
         Args:
             humans (Humans): humans
         """        
-        
         for human in humans.humans:
             human.pose2D.x
             human.pose2D.y
