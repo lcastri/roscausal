@@ -9,13 +9,13 @@ from spencer_tracking_msgs.msg import TrackedPersons
 from shapely.geometry import Point, Polygon
 from tf2_ros import Buffer, TransformListener
 import tf2_geometry_msgs
+from std_msgs.msg import String
 
 
 NODE_NAME = "roscausal_human"
 NODE_RATE = 10 # [Hz]
 MAP_BOUNDARIES = [] # add points
 MAP_POLY = Polygon(MAP_BOUNDARIES)
-
 
 
 def get_2DPose(p):
@@ -67,11 +67,24 @@ class HumanStateClass():
         self.pub_human_state = rospy.Publisher('/roscausal/humans', Humans, queue_size=10)
         
         rospy.Subscriber(PEOPLE_TOPIC, TrackedPersons, self.get_data)
+        
+        rospy.Subscriber('/roscausal/goal', String, self.get_goal)
             
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer)
+        self.goal = None
             
             
+    def get_goal(self, g: String):
+        gg = str(g.data)
+        if gg != '':
+            self.goal = gg.split("_")
+            self.goal = [float(i) for i in self.goal]
+        else:
+            self.goal = None
+            
+                    
+        
     def get_data(self, people: TrackedPersons):
         """
         people callback
@@ -82,10 +95,7 @@ class HumanStateClass():
         humans = Humans()
         humans.header = Header()
         humans.header.stamp = rospy.Time.now()
-        
-        # FIXME: I might not have this info
-        pg = rospy.get_param(GOAL_PARAM, None) if GOAL_PARAM is not None else None
-        
+                
         for person in people.tracks:
             
             trans = self.tf_buffer.lookup_transform(TARGET_FRAME, people.header.frame_id, rospy.Time(0), rospy.Duration(0.5))
@@ -127,10 +137,11 @@ class HumanStateClass():
             twist.angular.z = transformed_twist.twist.angular.z        
             msg.twist = twist
             
-            if pg is not None:
-                msg.goal = Point(pg[0], pg[1], 0)
+            rospy.logerr("self.goal = " + str(self.goal))
+            if self.goal is not None:
+                msg.goal = Point(self.goal[0], self.goal[1], 0)
             else:
-                msg.goal = Point(msg.pose2D.x, msg.pose2D.y, 0)
+                msg.goal = Point(-1000, -1000, 0) # NOTE: THIS IS A TRICK
             
             humans.humans.append(msg)
             

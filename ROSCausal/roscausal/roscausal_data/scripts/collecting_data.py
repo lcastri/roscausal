@@ -54,6 +54,10 @@ class DataCollector():
             if SUBSAMPLING: self.raw = self.subsampling(self.raw, DT)
             timestamp_str = datetime.now().strftime(ID_FORMAT)
             csv_name = CSV_PREFIX + timestamp_str + '.csv'
+            
+            h_id = 1000
+            self.raw[f'h_{h_id}'+'_{gx}'].bfill(axis=0, inplace=True)
+            self.raw[f'h_{h_id}'+'_{gy}'].bfill(axis=0, inplace=True)
 
             self.raw.interpolate(method='linear', axis=0, inplace=True)
             self.raw.bfill(axis=0, inplace=True)
@@ -114,13 +118,13 @@ class DataCollector():
             if f'h_{h_id}'+'_{\omega}' not in self.raw.columns: self.raw[f'h_{h_id}'+'_{\omega}'] = None    
             if f'h_{h_id}'+'_{gx}' not in self.raw.columns: self.raw[f'h_{h_id}'+'_{gx}'] = None    
             if f'h_{h_id}'+'_{gy}' not in self.raw.columns: self.raw[f'h_{h_id}'+'_{gy}'] = None    
-            self.raw.loc[new_row_loc,f'h_{h_id}_x'] = human.pose2D.x
-            self.raw.loc[new_row_loc,f'h_{h_id}_y'] = human.pose2D.y
-            self.raw.loc[new_row_loc,f'h_{h_id}'+'_{\theta}'] = human.pose2D.theta
-            self.raw.loc[new_row_loc,f'h_{h_id}_v'] = math.sqrt(human.twist.linear.x**2 + human.twist.linear.y**2)
-            self.raw.loc[new_row_loc,f'h_{h_id}'+'_{\omega}'] = human.twist.angular.z
-            self.raw.loc[new_row_loc,f'h_{h_id}'+'_{gx}'] = human.goal.x
-            self.raw.loc[new_row_loc,f'h_{h_id}'+'_{gy}'] = human.goal.y
+            self.raw.loc[new_row_loc, f'h_{h_id}_x'] = human.pose2D.x
+            self.raw.loc[new_row_loc, f'h_{h_id}_y'] = human.pose2D.y
+            self.raw.loc[new_row_loc, f'h_{h_id}'+'_{\theta}'] = human.pose2D.theta
+            self.raw.loc[new_row_loc, f'h_{h_id}_v'] = math.sqrt(human.twist.linear.x**2 + human.twist.linear.y**2)
+            self.raw.loc[new_row_loc, f'h_{h_id}'+'_{\omega}'] = human.twist.angular.z
+            self.raw.loc[new_row_loc, f'h_{h_id}'+'_{gx}'] = None if human.goal.x == -1000 else human.goal.x
+            self.raw.loc[new_row_loc, f'h_{h_id}'+'_{gy}'] = None if human.goal.y == -1000 else human.goal.y
 
           
     def subsampling(self, df: pd.DataFrame, dt, tol = 0.01):

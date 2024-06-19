@@ -3,6 +3,7 @@
 import rospy
 from roscausal_msgs.msg import Humans
 import math
+from std_msgs.msg import String
 
 
 NODE_NAME = "publish_goal"
@@ -18,9 +19,10 @@ class PublishGoalClass():
         HumanState constructor
         """
                         
-        # Humans subscriber        
+        # Humans subscriber    
         rospy.Subscriber('/roscausal/humans', Humans, self.get_data)
-            
+        self.pub_goal = rospy.Publisher('/roscausal/goal', String, queue_size=10)
+
             
     def get_data(self, humans: Humans):
         """
@@ -28,17 +30,20 @@ class PublishGoalClass():
 
         Args:
             humans (Humans): humans
-        """        
+        """
+        goal = ''
         for human in humans.humans:
             human.pose2D.x
             human.pose2D.y
             
             for goal in GOALS:
                 if math.sqrt((human.pose2D.x - goal[0])**2 + (human.pose2D.y - goal[1])**2) <= DIST_THRES:
-                    pg = rospy.set_param('/hri/selected_agent_goal', [goal[0], goal[1]])
+                    goal = str(goal[0]) + "_" + str(goal[1])
                     break
             break
-       
+        msg = String()
+        msg.data = goal
+        self.pub_goal.publish(msg.data)
 
 if __name__ == '__main__':
     
