@@ -141,57 +141,7 @@ class HumanStateClass():
             humans.humans.append(msg)
             
         self.pub_human_state.publish(humans)
-
-               
-        
-    # def get_data(self, humans: TrackedPersons):
-    #     """
-    #     Autonomous people callback
-
-    #     Args:
-    #         people (TrackedPersons): humans
-    #     """
-    #     humans = Humans()
-    #     humans.header = Header()
-    #     humans.header.stamp = rospy.Time.now()
-        
-    #     # FIXME: I might not have this info
-    #     pg = rospy.get_param(GOAL_PARAM, None) if GOAL_PARAM is not None else None
-        
-    #     for person in humans.humans:
-    #         state = get_2DPose(person.centroid)
-    #         person_pos = Point(state.x, state.y)
-
-    #         if MAP_POLY.contains(person_pos): # this is useful for checking if the person is within a certain area
-        
-    #             # msg
-    #             msg = HumanState()
-    #             msg.header = Header()
-    #             msg.header.stamp = rospy.Time.now()
-    #             # FIXME: is the source frame map? If not, I need to transform it into the map frame
-    #             msg.header.frame_id = TARGET_FRAME
-    #             msg.id = int(person.id)
-    #             msg.pose2D = Pose2D(state.x, state.y, state.theta)
-                
-    #             twist = Twist()
-    #             twist.linear.x = person.velocity.twist.linear.x
-    #             twist.linear.y = person.velocity.twist.linear.y
-    #             twist.linear.z = person.velocity.twist.linear.z
-    #             twist.angular.x = person.velocity.twist.angular.x
-    #             twist.angular.y = person.velocity.twist.angular.y
-    #             twist.angular.z = person.velocity.twist.angular.z        
-    #             msg.twist = twist
-                
-    #             # FIXME: I might not have this info
-    #             if pg is not None:
-    #                 msg.goal = Point(pg[0], pg[1], 0)
-    #             else:
-    #                 msg.goal = Point(msg.pose2D.x, msg.pose2D.y, 0)
-                
-    #             humans.humans.append(msg)
-            
-    #     self.pub_human_state.publish(humans)
-        
+       
 
 if __name__ == '__main__':
     
@@ -205,7 +155,6 @@ if __name__ == '__main__':
     GOAL_PARAM = rospy.get_param("~goal_param", "")
     GOAL_PARAM = None if GOAL_PARAM == "" else GOAL_PARAM
     
-    SOURCE_FRAME = rospy.get_param("~source_frame")
     TARGET_FRAME = rospy.get_param("~target_frame", "map")
     
     H = HumanStateClass()
