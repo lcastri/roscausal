@@ -12,7 +12,6 @@ from std_msgs.msg import Header
 from geometry_msgs.msg import Vector3Stamped, Pose2D, Twist, Point
 from move_base_msgs.msg import MoveBaseActionGoal
 
-
 NODE_NAME = "roscausal_robot"
 NODE_RATE = 10 # [Hz]
 
@@ -53,7 +52,7 @@ class RobotStateClass():
         self.pub_robot_state = rospy.Publisher('/roscausal/robot', RobotState, queue_size=10)
                                 
         # Robot pose subscriber
-        sub_robot_pose = rospy.Subscriber(POSE_TOPIC, PoseWithCovarianceStamped, self.get_data)
+        sub_robot_pose = rospy.Subscriber(POSE_TOPIC, Odometry, self.get_data)
         
         # Robot Goal subscriber
         rospy.Subscriber(GOAL_TOPIC, MoveBaseActionGoal, self.cb_goal)
@@ -63,10 +62,7 @@ class RobotStateClass():
         #                                                         sub_robot_pose], 
         #                                                         queue_size = 10, slop = 0.1,
         #                                                         allow_headerless = True)
-        
-        if SOURCE_FRAME != TARGET_FRAME:
-            self.tf_buffer = Buffer()
-            self.tf_listener = TransformListener(self.tf_buffer)
+    
 
         # self.ats.registerCallback(self.get_data)
         
@@ -81,7 +77,7 @@ class RobotStateClass():
         self.rg = (goal.goal.target_pose.pose.position.x, goal.goal.target_pose.pose.position.y)
                        
 
-    def get_data(self, robot_pose: PoseWithCovarianceStamped):
+    def get_data(self, robot_pose: Odometry):
         """
         Synchronized callback
 
@@ -89,37 +85,13 @@ class RobotStateClass():
             robot_odom (Odometry): robot odometry
             robot_pose (PoseWithCovarianceStamped): robot pose
         """
-        if SOURCE_FRAME != TARGET_FRAME:
-            transform = self.tf_buffer.lookup_transform(TARGET_FRAME, SOURCE_FRAME, rospy.Time(), rospy.Duration(0.5))
-            original_vector = Vector3Stamped()
-            original_vector.header.frame_id = SOURCE_FRAME
-            original_vector.vector.x = robot_pose.twist.twist.linear.x
-            original_vector.vector.y = robot_pose.twist.twist.linear.y
-            original_vector.vector.z = robot_pose.twist.twist.linear.z
-            r_v = do_transform_vector3(original_vector, transform)
-            
-            original_vector = Vector3Stamped()
-            original_vector.header.frame_id = SOURCE_FRAME
-            original_vector.vector.x = robot_pose.twist.twist.angular.x
-            original_vector.vector.y = robot_pose.twist.twist.angular.y
-            original_vector.vector.z = robot_pose.twist.twist.angular.z
-            r_w = do_transform_vector3(original_vector, transform)
-        
-            twist = Twist()
-            twist.linear.x = r_v.vector.x
-            twist.linear.y = r_v.vector.y
-            twist.linear.z = r_v.vector.z
-            twist.angular.x = r_w.vector.x
-            twist.angular.y = r_w.vector.y
-            twist.angular.z = r_w.vector.z
-        else:
-            twist = Twist()
-            twist.linear.x = robot_pose.twist.twist.linear.x
-            twist.linear.y = robot_pose.twist.twist.linear.y
-            twist.linear.z = robot_pose.twist.twist.linear.z
-            twist.angular.x = robot_pose.twist.twist.angular.x
-            twist.angular.y = robot_pose.twist.twist.angular.y
-            twist.angular.z = robot_pose.twist.twist.angular.z
+        twist = Twist()
+        twist.linear.x = robot_pose.twist.twist.linear.x
+        twist.linear.y = robot_pose.twist.twist.linear.y
+        twist.linear.z = robot_pose.twist.twist.linear.z
+        twist.angular.x = robot_pose.twist.twist.angular.x
+        twist.angular.y = robot_pose.twist.twist.angular.y
+        twist.angular.z = robot_pose.twist.twist.angular.z
         
                
         msg = RobotState()

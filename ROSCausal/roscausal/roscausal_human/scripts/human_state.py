@@ -5,7 +5,7 @@ from roscausal_msgs.msg import HumanState, Humans
 import tf
 from std_msgs.msg import Header
 from geometry_msgs.msg import Pose2D, Twist, PoseWithCovariance, TwistWithCovariance, Pose, Point
-from darko_perception_msgs.msg import TrackedPersons, TrackedPerson
+from spencer_tracking_msgs.msg import TrackedPersons
 from shapely.geometry import Point, Polygon
 from tf2_ros import Buffer, TransformListener
 import tf2_geometry_msgs
@@ -79,6 +79,8 @@ class HumanStateClass():
         Args:
             people (TrackedPersons): people
         """
+        rospy.logerr("CIAO")
+        
         humans = Humans()
         humans.header = Header()
         humans.header.stamp = rospy.Time.now()
