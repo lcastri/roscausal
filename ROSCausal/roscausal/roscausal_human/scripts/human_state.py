@@ -78,9 +78,7 @@ class HumanStateClass():
 
         Args:
             people (TrackedPersons): people
-        """
-        rospy.logerr("CIAO")
-        
+        """        
         humans = Humans()
         humans.header = Header()
         humans.header.stamp = rospy.Time.now()
@@ -90,7 +88,7 @@ class HumanStateClass():
         
         for person in people.tracks:
             
-            trans = self.tf_buffer.lookup_transform(TARGET_FRAME, humans.header.frame_id, rospy.Time(0), rospy.Duration(0.5))
+            trans = self.tf_buffer.lookup_transform(TARGET_FRAME, people.header.frame_id, rospy.Time(0), rospy.Duration(0.5))
             transformed_pose = tf2_geometry_msgs.do_transform_pose(person.pose, trans)
 
             transformed_twist = TwistWithCovariance()
@@ -109,7 +107,7 @@ class HumanStateClass():
             transformed_twist.twist.angular = transformed_angular_velocity.vector
             
             
-            state = get_2DPose(transformed_pose)
+            state = get_2DPose(transformed_pose.pose)
         
             # msg
             msg = HumanState()
