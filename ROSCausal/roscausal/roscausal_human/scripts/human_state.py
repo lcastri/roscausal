@@ -94,24 +94,19 @@ class HumanStateClass():
             transformed_pose = tf2_geometry_msgs.do_transform_pose(person.pose, trans)
 
             transformed_twist = TwistWithCovariance()
-            transformed_twist.header.stamp = rospy.Time.now()
-            transformed_twist.header.frame_id = TARGET_FRAME
 
             # Transform linear velocity
             linear_velocity = tf2_geometry_msgs.Vector3Stamped()
             linear_velocity.vector = person.twist.twist.linear
-            linear_velocity.header = person.header
             transformed_linear_velocity = tf2_geometry_msgs.do_transform_vector3(linear_velocity, trans)
 
             # Transform angular velocity
             angular_velocity = tf2_geometry_msgs.Vector3Stamped()
             angular_velocity.vector = person.twist.twist.angular
-            angular_velocity.header = person.header
             transformed_angular_velocity = tf2_geometry_msgs.do_transform_vector3(angular_velocity, trans)
 
             transformed_twist.twist.linear = transformed_linear_velocity.vector
             transformed_twist.twist.angular = transformed_angular_velocity.vector
-            transformed_twist.covariance = twist.twist.covariance
             
             
             state = get_2DPose(transformed_pose)
@@ -125,12 +120,12 @@ class HumanStateClass():
             msg.pose2D = Pose2D(state.x, state.y, state.theta)
             
             twist = Twist()
-            twist.linear.x = person.twist.twist.linear.x
-            twist.linear.y = person.twist.twist.linear.y
-            twist.linear.z = person.twist.twist.linear.z
-            twist.angular.x = person.twist.twist.angular.x
-            twist.angular.y = person.twist.twist.angular.y
-            twist.angular.z = person.twist.twist.angular.z        
+            twist.linear.x = transformed_twist.twist.linear.x
+            twist.linear.y = transformed_twist.twist.linear.y
+            twist.linear.z = transformed_twist.twist.linear.z
+            twist.angular.x = transformed_twist.twist.angular.x
+            twist.angular.y = transformed_twist.twist.angular.y
+            twist.angular.z = transformed_twist.twist.angular.z        
             msg.twist = twist
             
             if pg is not None:

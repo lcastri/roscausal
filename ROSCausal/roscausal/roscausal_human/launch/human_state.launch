@@ -1,5 +1,5 @@
 <launch>
-  <arg name="people_topic" default="/tracked_people"/>
+  <arg name="people_topic" default="/tracked_persons"/>
   <arg name="goal_param"  default=""/>
   <arg name="target_frame"  default="robot_map"/>
 
