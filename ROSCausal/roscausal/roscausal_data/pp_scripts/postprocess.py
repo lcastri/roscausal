@@ -157,7 +157,7 @@ if __name__ == '__main__':
     RG = Agent("RG", data["r_{gx}"], data["r_{gy}"])
     HG = Agent("HG", data["h_" + SEL_ID + "_{gx}"], data["h_" + SEL_ID + "_{gy}"])
             
-    df = pd.DataFrame(columns=["v", "d_g", "r"])  
+    df = pd.DataFrame(columns=["v", "d_g", "\theta_g"])  
     
     I0 = 1
     for i in range(I0, len(data)-1):

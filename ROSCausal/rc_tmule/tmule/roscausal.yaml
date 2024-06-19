@@ -30,6 +30,7 @@ windows:
     panes:
       - 'roslaunch roscausal_robot robot_state.launch'
       - 'roslaunch roscausal_human human_state.launch'
+      - 'rosrun publish_goal publish_goal.py'
   - name: discovery
     tags: ['roscausal']
     panes:
