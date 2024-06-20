@@ -3,7 +3,7 @@
 
 
   <node name="publish_cm" pkg="publish_cm" type="publish_cm.py" output="screen">
-    <param name="cm_path"   value="$(arr cm_path)"/> 
+    <param name="cm_path"   value="$(arg cm_path)"/> 
   </node>
  
 </launch>

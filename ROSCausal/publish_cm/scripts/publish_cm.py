@@ -4,6 +4,7 @@ import cv2
 import rospy
 from std_msgs.msg import String
 from cv_bridge import CvBridge
+from sensor_msgs.msg import Image
 
 
 NODE_NAME = "publish_cm"
@@ -18,7 +19,7 @@ if __name__ == '__main__':
     CM_PATH = str(rospy.get_param("~cm_path", default = ''))
 
     time = rospy.get_time()
-    pub_tsdag = rospy.Publisher('/roscausal/tsdag', String, queue_size=10)
+    pub_tsdag = rospy.Publisher('/roscausal/tsdag', Image, queue_size=10)
     bridge = CvBridge()
 
     while not rospy.is_shutdown():
