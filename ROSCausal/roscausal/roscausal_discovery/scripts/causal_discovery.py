@@ -10,7 +10,6 @@ from sensor_msgs.msg import Image
 import stat
 import importlib
 from inspect import isfunction
-from fpcmci.basics.constants import LabelType
 from cv_bridge import CvBridge
 import cv2
 

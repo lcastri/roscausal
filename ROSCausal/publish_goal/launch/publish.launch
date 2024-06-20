@@ -1,0 +1,9 @@
+<launch>
+  <arg name="cm_path" default = "$(find publish_cm)/ts_dag.png"/>
+
+
+  <node name="publish_cm" pkg="publish_cm" type="publish_cm.py" output="screen">
+    <param name="cm_path"   value="$(arr cm_path)"/> 
+  </node>
+ 
+</launch>
