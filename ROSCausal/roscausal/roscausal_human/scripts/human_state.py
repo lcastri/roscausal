@@ -80,8 +80,7 @@ class HumanStateClass():
         else:
             self.goal = None
             
-                    
-        
+                     
     def get_data(self, people: TrackedPersons):
         """
         people callback
