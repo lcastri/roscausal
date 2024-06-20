@@ -11,6 +11,7 @@ NODE_RATE = 10 # [Hz]
 
 
 def publish_message(event):
+    rospy.logerr("CIAO")
     pub_tsdag = rospy.Publisher('/roscausal/tsdag', Image, queue_size=10)
     bridge = CvBridge()
     # Publish tsDAG
@@ -20,6 +21,7 @@ def publish_message(event):
 
 
 if __name__ == '__main__':
+    rospy.logerr("HERE")
     
     # Node
     rospy.init_node(NODE_NAME, anonymous=True)
@@ -27,4 +29,6 @@ if __name__ == '__main__':
     
     CM_PATH = str(rospy.get_param("~cm_path", default = ''))
     
-    rospy.Timer(rospy.Duration(60), publish_message)
+    rospy.Timer(rospy.Duration(10), publish_message)
+    
+    rospy.spin()
