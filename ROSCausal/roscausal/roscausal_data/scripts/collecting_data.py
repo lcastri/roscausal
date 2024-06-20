@@ -54,6 +54,7 @@ class DataCollector():
             if SUBSAMPLING: self.raw = self.subsampling(self.raw, DT)
             timestamp_str = datetime.now().strftime(ID_FORMAT)
             csv_name = CSV_PREFIX + timestamp_str + '.csv'
+            self.raw.to_csv(DATA_DIR + '/test_bfill_' + csv_name, sep=',', index=False)
             
             h_id = 1000
             self.raw[f'h_{h_id}'+'_{gx}'].bfill(axis=0, inplace=True)
