@@ -1,6 +1,6 @@
 <launch>
   <arg name="data_dir" default = "/root/shared/data_pool"/>
-  <arg name="pp_data_dir" default = "$/root/shared/pp_data_pool"/>
+  <arg name="pp_data_dir" default = "/root/shared/pp_data_pool"/>
   <arg name="pp_script_dir" default = "$(find roscausal_data)/pp_scripts/"/>
   <arg name="pp_script" default = "postprocess.py"/>
   <arg name="ts_length" default="90"/> 
