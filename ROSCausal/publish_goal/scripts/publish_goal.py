@@ -30,19 +30,19 @@ class PublishGoalClass():
         Args:
             humans (Humans): humans
         """
-        goal = ''
+        g = ''
         for human in humans.humans:
             human.pose2D.x
             human.pose2D.y
             
             for goal in GOALS:
                 if math.sqrt((human.pose2D.x - goal[0])**2 + (human.pose2D.y - goal[1])**2) <= DIST_THRES:
-                    goal = str(goal[0]) + "_" + str(goal[1])
+                    g = str(goal[0]) + "_" + str(goal[1])
                     break
             break
         msg = String()
-        msg.data = goal
-        self.pub_goal.publish(msg.data)
+        msg.data = g
+        self.pub_goal.publish(msg)
 
 if __name__ == '__main__':
     

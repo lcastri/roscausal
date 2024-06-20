@@ -133,7 +133,6 @@ class HumanStateClass():
             twist.angular.z = transformed_twist.twist.angular.z        
             msg.twist = twist
             
-            rospy.logerr("self.goal = " + str(self.goal))
             if self.goal is not None:
                 msg.goal = Point(self.goal[0], self.goal[1], 0)
             else:
