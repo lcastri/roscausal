@@ -2,13 +2,22 @@
 
 import cv2
 import rospy
-from std_msgs.msg import String
 from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
 
 
 NODE_NAME = "publish_cm"
 NODE_RATE = 10 # [Hz]
+
+
+def publish_message(event):
+    pub_tsdag = rospy.Publisher('/roscausal/tsdag', Image, queue_size=10)
+    bridge = CvBridge()
+    # Publish tsDAG
+    img = cv2.imread(CM_PATH)
+    img_msg = bridge.cv2_to_imgmsg(img, encoding="bgr8")
+    pub_tsdag.publish(img_msg)
+
 
 if __name__ == '__main__':
     
@@ -17,19 +26,5 @@ if __name__ == '__main__':
     rate = rospy.Rate(NODE_RATE)
     
     CM_PATH = str(rospy.get_param("~cm_path", default = ''))
-
-    time = rospy.get_time()
-    pub_tsdag = rospy.Publisher('/roscausal/tsdag', Image, queue_size=10)
-    bridge = CvBridge()
-
-    while not rospy.is_shutdown():
-        
-        while rospy.get_time() - time <= 60:
-            
-            # Publish tsDAG
-            img = cv2.imread(CM_PATH)
-            img_msg = bridge.cv2_to_imgmsg(img, encoding="bgr8")
-            pub_tsdag.publish(img_msg)
-            time = rospy.get_time()
-        
-            rate.sleep()
+    
+    rospy.Timer(rospy.Duration(60), publish_message)
