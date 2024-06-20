@@ -1,6 +1,6 @@
 <launch>
-  <arg name="data_dir" default = "$(find roscausal_data)/pp_pool/"/>
-  <arg name="res_dir" default = "$(find roscausal_discovery)/cm_pool/"/>
+  <arg name="data_dir" default = "/root/shared/pp_data_pool"/>
+  <arg name="res_dir" default = "/root/shared/cm_pool"/>
   <arg name="cd_method" default="pcmci"/>
   <arg name="sig_alpha" default="0.05"/>
   <arg name="min_lag" default="1"/>
