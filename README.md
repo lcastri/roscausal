@@ -77,11 +77,13 @@ The ROS-Causal library requires the [F-PCMCI](https://github.com/lcastri/fpcmci)
 
 If you found this useful for your work, please cite this papers:
 ```
-@inproceedings{castri2024ros,
-  title={ROS-Causal: A ROS-based Causal Analysis Framework for Human-Robot Interaction Applications},
+@inproceedings{castri2024exp,
+  title={Experimental Evaluation of ROS-Causal in Real-World Human-Robot Spatial Interaction Scenarios},
   author={Castri, Luca and Beraldo, Gloria and Mghames, Sariah and Hanheide, Marc and Bellotto, Nicola},
-  booktitle={Workshop on Causal Learning for Human-Robot Interaction (Causal-HRI), ACM/IEEE International Conference on Human-Robot Interaction (HRI)},
-  year={2024}
+  booktitle={33nd IEEE International Conference on Robot and Human Interactive Communication (RO-MAN)},
+  pages={},
+  year={2024},
+  organization={IEEE}
 }
 ```
 
