@@ -1,4 +1,4 @@
-# <img src="https://github.com/lcastri/roscausal/blob/main/images/roscausal.png" width="25"> ROS-Causal
+# <img src="https://github.com/lcastri/roscausal/blob/main/images/roscausal.png" width="35"> ROS-Causal
 ![](https://github.com/lcastri/roscausal/blob/main/images/intro.png "ROS-Causal")
 
 A ROS-Based Causal Analysis Framework for Human-Robot Interaction Applications. The library facilitates onboard data collection and causal discovery in human-robot spatial interactions. Due to its modular design, it allows the integration of new causal discovery methods and functionalities. The framework has been incorporated into a Docker container named [ROS-Causal_HRISim](https://github.com/lcastri/ROS-Causal_HRISim). ROS-Causal_HRISim represents a Gazebo-based simulator for HRI scenarios involving a TIAGo robot and multiple pedestrians.
