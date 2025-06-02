@@ -140,7 +140,6 @@ class HumanStateClass():
             
             humans.humans.append(msg)
             
-            
             break # NOTE: this is to ensure that there is only one person in the scene 
             
         self.pub_human_state.publish(humans)
@@ -155,8 +154,8 @@ if __name__ == '__main__':
     PEOPLE_TOPIC = rospy.get_param("~people_topic", "")
     PEOPLE_TOPIC = None if PEOPLE_TOPIC == "" else PEOPLE_TOPIC
     
-    GOAL_PARAM = rospy.get_param("~goal_param", "")
-    GOAL_PARAM = None if GOAL_PARAM == "" else GOAL_PARAM
+    # GOAL_PARAM = rospy.get_param("~goal_param", "")
+    # GOAL_PARAM = None if GOAL_PARAM == "" else GOAL_PARAM
     
     TARGET_FRAME = rospy.get_param("~target_frame", "map")
     

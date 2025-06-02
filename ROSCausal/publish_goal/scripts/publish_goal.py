@@ -17,7 +17,6 @@ class PublishGoalClass():
         """
         HumanState constructor
         """
-                        
         # Humans subscriber    
         rospy.Subscriber('/roscausal/humans', Humans, self.get_data)
         self.pub_goal = rospy.Publisher('/roscausal/goal', String, queue_size=10)

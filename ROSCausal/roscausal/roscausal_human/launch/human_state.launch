@@ -1,11 +1,11 @@
 <launch>
-  <arg name="people_topic" default="/tracked_persons"/>
-  <arg name="goal_param"  default="/hri/selected_agent_goal"/>
+  <arg name="people_topic" default="/perception/humans/tracked_persons"/>
+  <!-- <arg name="goal_param"  default="/hri/selected_agent_goal"/> -->
   <arg name="target_frame"  default="robot_map"/>
 
   <node name="roscausal_human" pkg="roscausal_human" type="human_state.py" output="screen">
     <param name="people_topic" type="string" value="$(arg people_topic)"/>
-    <param name="goal_param" type="string" value="$(arg goal_param)"/>
+    <!-- <param name="goal_param" type="string" value="$(arg goal_param)"/> -->
     <param name="target_frame" type="string" value="$(arg target_frame)"/>
   </node>
 

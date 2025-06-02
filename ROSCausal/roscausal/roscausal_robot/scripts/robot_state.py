@@ -52,19 +52,10 @@ class RobotStateClass():
         self.pub_robot_state = rospy.Publisher('/roscausal/robot', RobotState, queue_size=10)
                                 
         # Robot pose subscriber
-        sub_robot_pose = rospy.Subscriber(POSE_TOPIC, Odometry, self.get_data)
+        rospy.Subscriber(POSE_TOPIC, Odometry, self.get_data)
         
         # Robot Goal subscriber
         rospy.Subscriber(GOAL_TOPIC, MoveBaseActionGoal, self.cb_goal)
-                
-        # Init synchronizer and assigning a callback 
-        # self.ats = message_filters.ApproximateTimeSynchronizer([sub_odom,  
-        #                                                         sub_robot_pose], 
-        #                                                         queue_size = 10, slop = 0.1,
-        #                                                         allow_headerless = True)
-    
-
-        # self.ats.registerCallback(self.get_data)
         
         
     def cb_goal(self, goal: MoveBaseActionGoal):
